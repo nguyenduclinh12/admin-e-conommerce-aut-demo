@@ -1,12 +1,45 @@
-.main .content{width: 80%;flex: 0 0 80%;}
+.main .content{width: 80%;flex: 0 0 80%; transition: all 0.3s;}
+.main .content.toggle{width: 100%;flex: 0 0 100%;}
 
-.right-content{padding: 90px 30px;}
+.right-content{padding: 90px 30px;padding-bottom: 10px;}
 .dashboardBoxWrapper{gap: 20px; width: 100%;flex-wrap: wrap;}
 .dashboardBoxWrapper .box{width: 100%; height: 100%;background: #ccc;}
 .graphBox{background-image: linear-gradient(#1a50b5,#2a6ff7);border-radius: 10px; padding: 25px;}
 
 .toggleIcon{font-size: 22px; color: rgba(0, 0, 0, 0.5); cursor: pointer; min-width: 40px !important; width: 40px !important; height: 40px !important;
      border-radius: 50% !important;}
-     .toggleIcon svg{color:#fff !important; font-size: 20px !important; opacity: 1 !important;}
-     .graphBox h4{font-size: 16px; font-weight: 600;}
-     .graphBox p{font-size: 13px; color: #fff; opacity: 0.7;}
+.toggleIcon svg{color:#fff !important; font-size: 20px !important; opacity: 1 !important;}
+.graphBox h4{font-size: 16px; font-weight: 600;}
+.graphBox p{font-size: 13px; color: #fff; opacity: 0.7;}
+
+.card{margin: 20px 0px; border-radius: 10px;}
+.card .hd{font-size: 18px; font-weight: bold; color:#403e57;}
+
+.cardFilters .col-md-3 h4{font-size: 14px; font-weight: 800; text-transform: capitalize; color: #403e57;}
+
+.table .thead-dark th{background-color: #1866ee !important; border-color: rgba(255, 255, 255, 0.1) !important; font-size: 13px !important;}
+
+.table tbody td{font-size: 14px !important; color: #403e57; font-weight: 500;}
+.table tbody .actions button{min-width: 30px !important; width: 30px !important; height: 30px !important; margin: 0px 3px !important;}
+
+.table tbody .actions button.secondary{background: rgba(203, 60, 231, 0.2) !important;}
+.table tbody .actions button.success{background: rgba(26, 159, 83, 0.2) !important;}
+.table tbody .actions button.error{background: rgba(241, 17, 51, 0.2) !important;}
+
+.table tbody .actions button svg{font-size: 32px !important;}
+table.v-align td{vertical-align: middle !important;}
+.table td .old, .table td .new{display: block; width: 100%;}
+
+table td .imgWrapper{width: 20%; flex: 0 0 20%;}
+table td .info{width: 65%; flex: 0 0 65%;}
+table td .info h6{overflow:hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; font-weight: 600; margin-bottom: 5px;}
+table td .info p{font-size: 13px; line-height: 18px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color:#5e5d72; margin-bottom: 0px;}
+
+table.v-align td .productBox{width: 270px;}
+
+.tableFooter{padding-bottom: 20px;}
+.tableFooter p{margin-bottom: 0px; font-size: 14px; font-weight: 500;}
+.tableFooter .pagination{margin-left: auto;}
+
+
+.css-1to7aaw-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected{background-color: #0858f7 !important;}

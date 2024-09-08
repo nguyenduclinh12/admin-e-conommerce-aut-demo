@@ -9,7 +9,7 @@
 .dashboardBoxWrapper .dashboardBox .toggleIcon{font-size: 22px; color:rgba(0,0,0,0.5); cursor: pointer; min-width: 40px !important; width: 40px !important; 
     height: 40px !important; border-radius: 50% !important;}
 
-    .dashboardBoxWrapper .dashboardBox .chart {opacity: 0.1; position: absolute;bottom: 20px;left: 20px;;}
+    .dashboardBoxWrapper .dashboardBox .chart {opacity: 0.050; position: absolute;bottom: 20px;left: 20px;;}
     .dashboardBoxWrapper .dashboardBox .chart svg{font-size: 110px; color: #000;}
     .dashboardBoxWrapper .dashboardBox .bottomEle{position: relative; top: 15px;;}
     .dashboardBoxWrapper .dashboardBox .MuiList-root svg{color:#000 !important; font-size: 17px !important; margin-right: 10px !important;}
