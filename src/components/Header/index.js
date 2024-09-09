@@ -24,6 +24,7 @@ const Header = () => {
   const [isOpenNotificationDrop, setIsOpenNotificationDrop] = useState(false);
   const openMyAcc = Boolean(anchorEl);
   const openNotification = Boolean(isOpenNotificationDrop);
+
   const context = useContext(MyContext);
 
   const handleOpenMyAccDrop = (event) => {
@@ -51,7 +52,7 @@ const Header = () => {
                 <span className="ml-2">HOTASH</span>
               </Link>
             </div>
-            <div className="col-sm-3 d-flex align-items-center part2 pl-4">
+            <div className="col-sm-3 d-flex align-items-center part2">
               <Button
                 className="rounded-circle mr-3"
                 onClick={() =>
@@ -495,82 +496,88 @@ const Header = () => {
                 </Menu>
               </div>
 
-              <div className="myAccWrapper">
-                <Button
-                  className="myAcc d-flex align-items-center"
-                  onClick={handleOpenMyAccDrop}
-                >
-                  <div className="userImg">
-                    <span className="rounded-circle">
-                      <img
-                        src="https://miconcoder-hotash.netlify.app/images/avatar/01.webp"
-                        alt=""
-                      />
-                    </span>
-                  </div>
-                  <div className="userInfo">
-                    <h4>Rinku Verma</h4>
-                    <p className="mb-0">@rinkuv37</p>
-                  </div>
-                </Button>
-                <Menu
-                  anchorEl={anchorEl}
-                  id="account-menu"
-                  open={openMyAcc}
-                  onClose={handleCloseMyAccDrop}
-                  onClick={handleCloseMyAccDrop}
-                  slotProps={{
-                    paper: {
-                      elevation: 0,
-                      sx: {
-                        overflow: "visible",
-                        filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                        mt: 1.5,
-                        "& .MuiAvatar-root": {
-                          width: 32,
-                          height: 32,
-                          ml: -0.5,
-                          mr: 1,
-                        },
-                        "&::before": {
-                          content: '""',
-                          display: "block",
-                          position: "absolute",
-                          top: 0,
-                          right: 14,
-                          width: 10,
-                          height: 10,
-                          bgcolor: "background.paper",
-                          transform: "translateY(-50%) rotate(45deg)",
-                          zIndex: 0,
+              {context.isLogin !== true ? (
+                <Link to="/login">
+                  <Button className="btn-blue btn-lg btn-round">Sign In</Button>
+                </Link>
+              ) : (
+                <div className="myAccWrapper">
+                  <Button
+                    className="myAcc d-flex align-items-center"
+                    onClick={handleOpenMyAccDrop}
+                  >
+                    <div className="userImg">
+                      <span className="rounded-circle">
+                        <img
+                          src="https://miconcoder-hotash.netlify.app/images/avatar/01.webp"
+                          alt=""
+                        />
+                      </span>
+                    </div>
+                    <div className="userInfo">
+                      <h4>Rinku Verma</h4>
+                      <p className="mb-0">@rinkuv37</p>
+                    </div>
+                  </Button>
+                  <Menu
+                    anchorEl={anchorEl}
+                    id="account-menu"
+                    open={openMyAcc}
+                    onClose={handleCloseMyAccDrop}
+                    onClick={handleCloseMyAccDrop}
+                    slotProps={{
+                      paper: {
+                        elevation: 0,
+                        sx: {
+                          overflow: "visible",
+                          filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                          mt: 1.5,
+                          "& .MuiAvatar-root": {
+                            width: 32,
+                            height: 32,
+                            ml: -0.5,
+                            mr: 1,
+                          },
+                          "&::before": {
+                            content: '""',
+                            display: "block",
+                            position: "absolute",
+                            top: 0,
+                            right: 14,
+                            width: 10,
+                            height: 10,
+                            bgcolor: "background.paper",
+                            transform: "translateY(-50%) rotate(45deg)",
+                            zIndex: 0,
+                          },
                         },
                       },
-                    },
-                  }}
-                  transformOrigin={{ horizontal: "right", vertical: "top" }}
-                  anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-                >
-                  <MenuItem onClick={handleCloseMyAccDrop}>
-                    <ListItemIcon>
-                      <PersonAdd fontSize="small" />
-                    </ListItemIcon>
-                    My Account
-                  </MenuItem>
-                  <MenuItem onClick={handleCloseMyAccDrop}>
-                    <ListItemIcon>
-                      <IoShieldHalfSharp />
-                    </ListItemIcon>
-                    Reset Password
-                  </MenuItem>
+                    }}
+                    transformOrigin={{ horizontal: "right", vertical: "top" }}
+                    anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+                  >
+                    <MenuItem onClick={handleCloseMyAccDrop}>
+                      <ListItemIcon>
+                        <PersonAdd fontSize="small" />
+                      </ListItemIcon>
+                      My Account
+                    </MenuItem>
+                    <MenuItem onClick={handleCloseMyAccDrop}>
+                      <ListItemIcon>
+                        <IoShieldHalfSharp />
+                      </ListItemIcon>
+                      Reset Password
+                    </MenuItem>
 
-                  <MenuItem onClick={handleCloseMyAccDrop}>
-                    <ListItemIcon>
-                      <Logout fontSize="small" />
-                    </ListItemIcon>
-                    Logout
-                  </MenuItem>
-                </Menu>
-              </div>
+                    <MenuItem onClick={handleCloseMyAccDrop}>
+                      <ListItemIcon>
+                        <Logout fontSize="small" />
+                      </ListItemIcon>
+                      Logout
+                    </MenuItem>
+                  </Menu>
+                </div>
+              )}
             </div>
           </div>
         </div>
