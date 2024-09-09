@@ -8,8 +8,13 @@ body{font-family: "Open Sans",sans-serif !important; background: #ebe9e9;overflo
 .btn-blue{background: #0858f7 !important; font-size: 15px !important; font-weight: 500; color: #fff !important; text-transform: capitalize !important;
      border-radius: 8px !important;}
 
+h1,h2,h3,h4,h5,h6{color:#403e57;}
+
+
 .btn-lg{padding: 5px 25px !important;}
 .btn-big{padding: 10px 25px !important;font-size: 16px !important;}
+.btn-big svg{font-size: 25px !important; margin-left: 7px;}
+
 .btn-round{border-radius: 30px !important;}
 .full{max-width: 100% !important; flex: 0 0 100% !important; width: 100% !important;}
 .link{color:#5e5d72; font-weight: 600;}

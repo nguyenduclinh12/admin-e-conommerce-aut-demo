@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import DashboardBox from "./components/DashboardBox";
 import "./Dashboard.css";
 import { FaPencilAlt, FaUserCircle } from "react-icons/fa";
@@ -19,6 +19,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { FaEye } from "react-icons/fa6";
 import Pagination from "@mui/material/Pagination";
+import { MyContext } from "../../App";
 
 export const data = [
   ["Task", "Hours per Day"],
@@ -40,6 +41,14 @@ const Dashboard = () => {
   const [catBy, setCatBy] = useState("");
   const open = Boolean(anchorEl);
   const ITEM_HEIGHT = 48;
+
+  const context = useContext(MyContext);
+
+  useEffect(() => {
+    context.setIsHideSidebarAndHeader(false);
+    window.scrollTo(0, 0);
+  }, []);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };

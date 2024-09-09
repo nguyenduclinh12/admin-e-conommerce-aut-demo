@@ -47,6 +47,7 @@ const Login = () => {
                   placeholder="enter your email"
                   onFocus={() => focusInput(0)}
                   onBlur={() => setInputIndex(null)}
+                  autoFocus
                 />
               </div>
               <div
@@ -101,7 +102,7 @@ const Login = () => {
               <Link to={"/signUp"} className="link color ml-2">
                 Register
               </Link>
-            </span> 
+            </span>
           </div>
         </div>
       </section>
