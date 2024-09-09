@@ -13,6 +13,20 @@ function App() {
   const [isToggleSidebar, setIsToggleSidebar] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const [isHideSidebarAndHeader, setIsHideSidebarAndHeader] = useState(false);
+  const [themeMode, setThemeMode] = useState(true);
+
+  useEffect(() => {
+    if (themeMode === true) {
+      document.body.classList.remove("dark");
+      document.body.classList.add("light");
+      localStorage.setItem("themeMode", "light");
+    } else {
+      document.body.classList.remove("light");
+      document.body.classList.add("dark");
+      localStorage.setItem("themeMode", "dark");
+    }
+  }, [themeMode]);
+
   const values = {
     isToggleSidebar,
     setIsToggleSidebar,
@@ -20,11 +34,11 @@ function App() {
     setIsLogin,
     isHideSidebarAndHeader,
     setIsHideSidebarAndHeader,
+    themeMode,
+    setThemeMode,
   };
-  console.log(isHideSidebarAndHeader)
-  useEffect(() => {
-    // alert(isToggleSidebar);
-  }, [isToggleSidebar]);
+  console.log(isHideSidebarAndHeader);
+  useEffect(() => {}, [isToggleSidebar]);
   return (
     <BrowserRouter>
       <MyContext.Provider value={values}>
@@ -41,10 +55,17 @@ function App() {
             </div>
           )}
           <div
-            className={`content ${isHideSidebarAndHeader===true && 'full'} ${isToggleSidebar === true ? "toggle" : ""}`}
+            className={`content ${isHideSidebarAndHeader === true && "full"} ${
+              isToggleSidebar === true ? "toggle" : ""
+            }`}
           >
             <Routes>
-              <Route path="/" exact={true} index element={<Dashboard />}></Route>
+              <Route
+                path="/"
+                exact={true}
+                index
+                element={<Dashboard />}
+              ></Route>
               <Route path="/login" exact={true} element={<Login />}></Route>
               <Route path="/signUp" exact={true} element={<SignUp />}></Route>
             </Routes>

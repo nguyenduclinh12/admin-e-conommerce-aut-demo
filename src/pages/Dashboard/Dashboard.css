@@ -15,6 +15,10 @@
 .card{margin: 20px 0px; border-radius: 10px;}
 .card .hd{font-size: 18px; font-weight: bold; color:#403e57;}
 
+body.dark .card{background: #112143 !important;}
+body.dark .card .hd{font-size: 18px; font-weight: bold; color: rgba(255, 255, 255, 0.8);}
+body.dark .cardFilters .col-md-3 h4{color: rgba(255, 255, 255, 0.8);}
+
 .cardFilters .col-md-3 h4{font-size: 14px; font-weight: 800; text-transform: capitalize; color: #403e57;}
 
 .table .thead-dark th{background-color: #1866ee !important; border-color: rgba(255, 255, 255, 0.1) !important; font-size: 13px !important;}
@@ -41,5 +45,11 @@ table.v-align td .productBox{width: 270px;}
 .tableFooter p{margin-bottom: 0px; font-size: 14px; font-weight: 500;}
 .tableFooter .pagination{margin-left: auto;}
 
+body.dark table td{color: rgba(255, 255, 255, 0.5) !important;}
 
 .css-1to7aaw-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected{background-color: #0858f7 !important;}
+
+body.dark .table-bordered td, .table-bordered th{border: 1px solid rgba(255, 255, 255, 0.1) !important;}
+body.dark .css-1to7aaw-MuiButtonBase-root-MuiPaginationItem-root:hover{background: rgba(255, 255, 255, 0.2) !important; color: #fff !important;}
+body.dark .css-1to7aaw-MuiButtonBase-root-MuiPaginationItem-root{color: rgba(255, 255, 255, 0.8) !important;}
+

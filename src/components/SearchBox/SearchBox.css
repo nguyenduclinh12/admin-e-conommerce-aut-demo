@@ -2,3 +2,6 @@
 .searchBox input{background: transparent; border: 0px; outline: none;padding-left: 0px;font-size: 14px; color: #292929;}
 .searchBox input::-webkit-input-placeholder{color: rgba(0, 0, 0, 0.6);}
 .searchBox svg{font-size: 18px; color: #292929;}
+body.dark .searchBox{background: #12254e;}
+
+body.dark .searchBox input, body.dark .searchBox input::-webkit-input-placeholder, body.dark .searchBox svg{color: rgba(255, 255, 255, 0.7);}

@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 *{margin: 0px;padding: 0px;}
 body{font-family: "Open Sans",sans-serif !important; background: #ebe9e9;overflow-x: hidden;}
+body.dark{background: #071739 !important;}
 
 ::-webkit-scrollbar{width: 5px !important; height: 5px !important;}
 ::-webkit-scrollbar-thumb{background: #0858f7 !important;}
@@ -24,4 +25,15 @@ h1,h2,h3,h4,h5,h6{color:#403e57;}
 .main .sidebarWrapper{width: 20%;flex: 0 0 20%; transition: all 0.3s ease-in-out;}
 
 h1,h2,h3,h4,h5,h6, p{color:#403e57}
+body.dark .css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root, 
+body.dark h1,
+body.dark h2,
+body.dark h3,
+body.dark h4, 
+body.dark h5, 
+body.dark h6,
+body.dark p, body.dark .css-hfutr2-MuiSvgIcon-root-MuiSelect-icon, body.dark .css-bpeome-MuiSvgIcon-root-MuiSelect-icon{color: rgba(255, 255, 255, 0.8) !important;}
+body.dark .css-1d3z3hw-MuiOutlinedInput-notchedOutline{border-color: rgba(255, 255, 255, 0.3) !important;}
+
 .table-responsive::-webkit-scrollbar-thumb{background: #ccc !important;}
+body.dark .table-responsive::-webkit-scrollbar-thumb{background:rgba(255, 255, 255, 0.3) !important;}

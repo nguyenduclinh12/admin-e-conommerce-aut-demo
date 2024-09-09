@@ -1,12 +1,21 @@
 
 header{width: 100%;height: 70px;background: rgba(255, 255, 255, 0.9); position: fixed;top: 0px;left: 0px;z-index: 1000;}
+
+body.dark header{background: #112143 !important;}
+
 header .logo{text-decoration: none;}
 header .logo img{width: 45px;}
 header .logo span{color:#292929; font-weight: 800; font-size: 24px;}
 
+body.dark header .logo span{color: #fff !important;opacity: 0.9;}
+
 header button.rounded-circle{min-width: 40px !important; width: 40px !important; height: 40px !important; background: #f0f5ff !important; color: #292929;}
 header button.rounded-circle svg{color:#292929; font-size: 18px !important; transition: all 0.2s ease-in-out;}
 header button.rounded-circle:hover svg{color: #0858f7 !important;}
+
+body.dark header button.rounded-circle{background: #112755 !important;}
+body.dark header button.rounded-circle svg{color: #fff !important;}
+
 header .part2{padding-left: 50px;}
 
 .myAcc{text-align: left !important; color: #0858f7 !important; text-transform: capitalize !important;}
@@ -19,6 +28,11 @@ header .part2{padding-left: 50px;}
 .myAcc .userInfo h4{font-size: 15px; font-weight: 600; margin-bottom: 0px; color: #292929;}
 .myAcc .userInfo p{margin-top: 0px; font-size: 12px; color: #000; opacity: 0.7;}
 
+body.dark .myAcc .userInfo *{color: rgba(255, 255, 255, 0.8) !important;}
+body.dark .MuiPaper-elevation{background-color: #12254e !important;}
+body.dark .MuiPaper-elevation li *, body.dark .MuiPaper-elevation li{color: rgba(255, 255, 255, 0.8) !important;}
+
+
 #account-menu li{font-size: 14px !important; padding: 12px 15px !important;}
 #account-menu li svg{font-size: 20px !important;}
 
@@ -28,6 +42,9 @@ header .part2{padding-left: 50px;}
 .dropdown_list .head h4{font-size: 17px; font-weight: 600;}
 .dropdown_list li.MuiButtonBase-root{background: #ebf6ff !important; color: #000 !important; padding: 10px 15px !important;}
 .dropdown_list li.MuiButtonBase-root:hover{background: #ebf6ff !important;}
+
+body.dark .dropdown_list .head h4{color: rgba(255, 255, 255, 0.9) !important;}
+body.dark .dropdown_list li.MuiButtonBase-root{background-color: #12254e !important; background: #12254e !important;}
 
 .dropdownInfo {padding-left: 15px;}
 .dropdownInfo h4{font-size: 13px; font-weight: 500; white-space: break-spaces; line-height: 21px; margin-top: 0px; margin-bottom: 0px;}
