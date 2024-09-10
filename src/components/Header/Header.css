@@ -24,9 +24,12 @@ header .part2{padding-left: 50px;}
 .userImg .rounded-circle{display: flex; align-items: center; justify-content: center;overflow: hidden; width: 100%;height: 100%;cursor:pointer ; position: relative;}
 .userImg .rounded-circle img{object-fit: cover; width: 100%;height: 100%;}
 
+.userImg.lg{width: 60px !important; height: 60px !important;}
+
 .myAcc .userInfo{padding-left: 10px;}
-.myAcc .userInfo h4{font-size: 15px; font-weight: 600; margin-bottom: 0px; color: #292929;}
+.myAcc .userInfo h4{font-size: 15px; line-height: 15px; font-weight: 600; margin-bottom: 0px; color: #292929;}
 .myAcc .userInfo p{margin-top: 0px; font-size: 12px; color: #000; opacity: 0.7;}
+.myAcc .userInfo h6{margin-bottom: 0px;}
 
 body.dark .myAcc .userInfo *{color: rgba(255, 255, 255, 0.8) !important;}
 body.dark .MuiPaper-elevation{background-color: #12254e !important;}

@@ -18,6 +18,7 @@ import PersonAdd from "@mui/icons-material/PersonAdd";
 import Logout from "@mui/icons-material/Logout";
 import Divider from "@mui/material/Divider";
 import { MyContext } from "../../App";
+import UserAvatarImgComponent from "../UserAvatarImgComponent";
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -69,7 +70,10 @@ const Header = () => {
             </div>
 
             <div className="col-sm-7 d-flex align-items-center part3 justify-content-end">
-              <Button className="rounded-circle mr-3" onClick={()=>context.setThemeMode(!context.themeMode)}>
+              <Button
+                className="rounded-circle mr-3"
+                onClick={() => context.setThemeMode(!context.themeMode)}
+              >
                 <MdOutlineLightMode></MdOutlineLightMode>
               </Button>
               <Button className="rounded-circle mr-3">
@@ -120,14 +124,11 @@ const Header = () => {
                     <MenuItem onClick={handleCloseNotificationDrop}>
                       <div className="d-flex">
                         <div>
-                          <div className="userImg">
-                            <span className="rounded-circle">
-                              <img
-                                src="https://res.cloudinary.com/dhbnnafid/image/upload/v1725441828/samples/smile.jpg"
-                                alt=""
-                              />
-                            </span>
-                          </div>
+                          <UserAvatarImgComponent
+                            img={
+                              "https://res.cloudinary.com/dhbnnafid/image/upload/v1725441828/samples/smile.jpg"
+                            }
+                          />
                         </div>
 
                         <div className="dropdownInfo">
@@ -506,14 +507,12 @@ const Header = () => {
                     className="myAcc d-flex align-items-center"
                     onClick={handleOpenMyAccDrop}
                   >
-                    <div className="userImg">
-                      <span className="rounded-circle">
-                        <img
-                          src="https://miconcoder-hotash.netlify.app/images/avatar/01.webp"
-                          alt=""
-                        />
-                      </span>
-                    </div>
+                    <UserAvatarImgComponent
+                      img={
+                        "https://mironcoder-hotash.netlify.app/images/avatar/01.webp"
+                      }
+                    />
+
                     <div className="userInfo">
                       <h4>Rinku Verma</h4>
                       <p className="mb-0">@rinkuv37</p>

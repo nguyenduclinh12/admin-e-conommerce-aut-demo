@@ -20,6 +20,7 @@ import Select from "@mui/material/Select";
 import { FaEye } from "react-icons/fa6";
 import Pagination from "@mui/material/Pagination";
 import { MyContext } from "../../App";
+import { Link } from "react-router-dom";
 
 export const data = [
   ["Task", "Hours per Day"],
@@ -233,9 +234,12 @@ const Dashboard = () => {
                   <td>$38k</td>
                   <td>
                     <div className="actions d-flex align-items-center">
-                      <Button className="secondary" color="secondary">
-                        <FaEye></FaEye>
-                      </Button>
+                      <Link to="/product/details">
+                        <Button className="secondary" color="secondary">
+                          <FaEye></FaEye>
+                        </Button>
+                      </Link>
+
                       <Button className="success" color="success">
                         <FaPencilAlt></FaPencilAlt>
                       </Button>
