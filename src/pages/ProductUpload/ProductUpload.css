@@ -1,0 +1,43 @@
+
+.form .form-group{margin-bottom: 25px;}
+.form .form-group h6{margin-bottom: 10px; font-size: 13px;}
+.form .form-group input, .form .form-group textarea{background: #fafafa; width: 100%; outline: none !important; border: 1px solid rgba(0, 0, 0, 0.1) !important;
+height: 60px; padding-left: 15px; border-radius: 5px; font-size: 14px;}
+
+.form .form-group textarea{height: 120px; padding-top: 15px;}
+
+body.dark .form .form-group input, body.dark .form .form-group textarea{background: #2b3c5f !important;border: 1px solid #253557 !important; 
+    color: rgba(255, 255, 255, 0.8) !important;}
+
+
+/* missing row 516 to 530 */
+.imgUploadBox{width: 100%;flex-wrap: nowrap; gap: 10px; padding: 40px !important;}
+.imgUploadBox .uploadBox{
+        width: 150px;height: 150px !important; padding: 0px;border-radius: 10px;border: 1px dashed rgba(0, 0, 0, 0.3); position: relative;display: flex;align-items: center;
+        justify-content: center; cursor: pointer; 
+        /* background: #fafafa; */
+        transition: all 0.3s;
+    }
+.imgUploadBox .uploadBox .box{
+        width: 100%;height: 150px !important;overflow: hidden;border-radius: 7px; padding: 2px;
+}
+.imgUploadBox .uploadBox .box .lazy-load-image-background{height: 100% !important;width: 100% !important;}
+.imgUploadBox .uploadBox .progressBar .MuiCircularProgress-root{width: 30px !important; height: 30px !important;}
+.imgUploadBox .uploadBox .progressBar span{font-size: 14px;}
+body.dark .imgUploadBox .uploadBox{border: 1px dashed rgba(255, 255, 255, 0.2);}
+body.dark .imgUploadBox .uploadBox *{color: rgba(255, 255, 255, 0.7) !important;}
+
+.imgUploadBox .uploadBox .remove{position: absolute;top: -7px;right: -7px;display: flex;align-items: center; justify-content: center; width: 20px; height: 20px;
+     background: #d32f2f; border-radius: 50%; cursor: pointer; z-index: 100;
+}
+
+.imgUploadBox .uploadBox .remove svg{font-size: 18px; color: #fff;}
+.imgUploadBox .uploadBox .MuiBox-root{position: absolute;}
+.imgUploadBox .uploadBox:hover{background: #f1f1f1;}
+
+.imgUploadBox .uploadBox img{height: 100%; object-fit: cover;}
+.imgUploadBox .uploadBox input{position: absolute; width: 100%; height: 100%; opacity: 0;}
+
+.imgUploadBox .uploadBox .info{display: flex; align-items: center; justify-content: center; flex-direction: column; pointer-events: none;}
+.imgUploadBox .uploadBox .info svg{font-size: 50px; opacity: 0.2;}
+.imgUploadBox .uploadBox .info h5{font-size: 15px; text-align: center; opacity: 0.5;}

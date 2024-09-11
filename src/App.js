@@ -8,6 +8,7 @@ import { createContext, useEffect, useState } from "react";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import ProductDetails from "./pages/ProductDetails";
+import ProductUpload from "./pages/ProductUpload";
 
 const MyContext = createContext();
 function App() {
@@ -73,6 +74,11 @@ function App() {
                 path="/product/details"
                 exact={true}
                 element={<ProductDetails />}
+              ></Route>
+              <Route
+                path="/product/upload"
+                exact={true}
+                element={<ProductUpload />}
               ></Route>
             </Routes>
           </div>

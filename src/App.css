@@ -35,7 +35,9 @@ body.dark h3,
 body.dark h4, 
 body.dark h5, 
 body.dark h6,
-body.dark p, body.dark .css-hfutr2-MuiSvgIcon-root-MuiSelect-icon, body.dark .css-bpeome-MuiSvgIcon-root-MuiSelect-icon{color: rgba(255, 255, 255, 0.8) !important;}
+body.dark p, body.dark .css-hfutr2-MuiSvgIcon-root-MuiSelect-icon, body.dark .css-bpeome-MuiSvgIcon-root-MuiSelect-icon,
+body.dark .css-1cprn2g-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root, body.dark .css-1u6jos5-MuiSvgIcon-root-MuiSelect-icon{color: rgba(255, 255, 255, 0.8) !important;}
+
 body.dark .css-1d3z3hw-MuiOutlinedInput-notchedOutline{border-color: rgba(255, 255, 255, 0.3) !important;}
 p{font-weight: 300; font-size: 15px; line-height: 25px;}
 
@@ -44,4 +46,5 @@ body.dark .table-responsive::-webkit-scrollbar-thumb{background:rgba(255, 255, 2
 .slick-slide{outline: none !important;}
 
 body.light p{font-weight: 400 !important;}
-body.dark .css-hmd0fc-MuiRating-root{color: #faaf00 !important;}
+/* body.dark .css-hmd0fc-MuiRating-root{color: #faaf00 !important;} */
+body.dark .css-1qqgbpl-MuiRating-root span{color: #faaf00 !important;}
