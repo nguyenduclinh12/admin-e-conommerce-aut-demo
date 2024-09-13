@@ -9,6 +9,12 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import ProductDetails from "./pages/ProductDetails";
 import ProductUpload from "./pages/ProductUpload";
+import CategoryAdd from "./pages/CategoryAdd";
+import Category from "./pages/Category";
+// alert
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+// end alert
 
 const MyContext = createContext();
 function App() {
@@ -16,6 +22,13 @@ function App() {
   const [isLogin, setIsLogin] = useState(true);
   const [isHideSidebarAndHeader, setIsHideSidebarAndHeader] = useState(false);
   const [themeMode, setThemeMode] = useState(true);
+  // alert
+  const [alertBox, setAlertBox] = useState({
+    msg: "",
+    error: false,
+    open: false,
+  });
+  // end alert
 
   useEffect(() => {
     if (themeMode === true) {
@@ -29,6 +42,17 @@ function App() {
     }
   }, [themeMode]);
 
+  // alert
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setAlertBox({
+      open: false,
+    });
+  };
+  // end alert
+
   const values = {
     isToggleSidebar,
     setIsToggleSidebar,
@@ -38,12 +62,31 @@ function App() {
     setIsHideSidebarAndHeader,
     themeMode,
     setThemeMode,
+    // alert
+    alertBox,
+    setAlertBox,
+    // end alert
   };
-  console.log(isHideSidebarAndHeader);
   useEffect(() => {}, [isToggleSidebar]);
   return (
     <BrowserRouter>
       <MyContext.Provider value={values}>
+        {/* alert */}
+        <Snackbar
+          open={alertBox.open}
+          autoHideDuration={6000}
+          onClose={handleClose}
+        >
+          <Alert
+            onClose={handleClose}
+            severity={alertBox.error === true ? "error" : "success"}
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            {alertBox.msg}
+          </Alert>
+        </Snackbar>
+        {/* end alert */}
         {isHideSidebarAndHeader !== true && <Header />}
 
         <div className="main d-flex">
@@ -79,6 +122,16 @@ function App() {
                 path="/product/upload"
                 exact={true}
                 element={<ProductUpload />}
+              ></Route>
+              <Route
+                path="/category"
+                exact={true}
+                element={<Category />}
+              ></Route>
+              <Route
+                path="/category/add"
+                exact={true}
+                element={<CategoryAdd />}
               ></Route>
             </Routes>
           </div>

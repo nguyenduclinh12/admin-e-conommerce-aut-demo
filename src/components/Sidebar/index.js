@@ -19,8 +19,6 @@ const Sidebar = () => {
     setActiveTab(index);
     setIsToggleSubmenu(!isToggleSubmenu);
   };
-  console.log(activeTab);
-  console.log(isToggleSubmenu);
   return (
     <>
       <div className="sidebar">
@@ -63,10 +61,10 @@ const Sidebar = () => {
             >
               <ul className="submenu">
                 <li>
-                  <Link to="#">Product List</Link>
+                  <Link to="/product">Product List</Link>
                 </li>
                 <li>
-                  <Link to="#">Product View</Link>
+                  <Link to="/product/new">Product New</Link>
                 </li>
                 <li>
                   <Link to="#">Product Upload</Link>
@@ -75,79 +73,36 @@ const Sidebar = () => {
             </div>
           </li>
           <li>
-            <Link to="/">
-              <Button
-                className={`w-100 ${activeTab === 2 && isToggleSubmenu === true ? "active" : ""}`}
-                onClick={() => isOpenSubmenu(2)}
-              >
-                <span className="icon">
-                  <FaCartArrowDown />
-                </span>
-                Orders
-                <span className="arrow">
-                  <FaAngleRight />
-                </span>
-              </Button>
-              <div
-                className={`submenuWrapper ${
-                  activeTab === 2 && isToggleSubmenu === true
-                    ? "colapse"
-                    : "colapsed"
-                }`}
-              >
-                <ul className="submenu">
-                  <li>
-                    <Link to="#">Order List</Link>
-                  </li>
-                  <li>
-                    <Link to="#">Order View</Link>
-                  </li>
-                  <li>
-                    <Link to="#">Order Upload</Link>
-                  </li>
-                </ul>
-              </div>
-            </Link>
-          </li>
-          <li>
-            <Link to="/">
-              <Button className={`w-100 ${activeTab === 3 ? "active" : ""}`}>
-                <span className="icon">
-                  <MdMessage />
-                </span>
-                Messages
-                <span className="arrow">
-                  <FaAngleRight />
-                </span>
-              </Button>
-              
-            </Link>
-          </li>
-          <li>
-            <Link to="/">
-              <Button className={`w-100 ${activeTab === 4 ? "active" : ""}`}>
-                <span className="icon">
-                  <FaBell />
-                </span>
-                notifications
-                <span className="arrow">
-                  <FaAngleRight />
-                </span>
-              </Button>
-            </Link>
-          </li>
-          <li>
-            <Link to="/">
-              <Button className={`w-100 ${activeTab === 5 ? "active" : ""}`}>
-                <span className="icon">
-                  <IoIosSettings />
-                </span>
-                Settings
-                <span className="arrow">
-                  <FaAngleRight />
-                </span>
-              </Button>
-            </Link>
+            <Button
+              className={`w-100 ${
+                activeTab === 2 && isToggleSubmenu === true ? "active" : ""
+              }`}
+              onClick={() => isOpenSubmenu(2)}
+            >
+              <span className="icon">
+                <FaProductHunt />
+              </span>
+              Catalogue
+              <span className="arrow">
+                <FaAngleRight />
+              </span>
+            </Button>
+            <div
+              className={`submenuWrapper ${
+                activeTab === 2 && isToggleSubmenu === true
+                  ? "colapse"
+                  : "colapsed"
+              }`}
+            >
+              <ul className="submenu">
+                <li>
+                  <Link to="/category">Catalogue List</Link>
+                </li>
+                <li>
+                  <Link to="/category/add">Catalogue Create</Link>
+                </li>
+              </ul>
+            </div>
           </li>
         </ul>
         <br />

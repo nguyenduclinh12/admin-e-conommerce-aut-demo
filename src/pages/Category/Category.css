@@ -1,0 +1,6 @@
+.dot{display:block; width: 20px;height: 20px;border-radius: 100%;}
+.editModal .css-1t1j96h-MuiPaper-root-MuiDialog-paper{width: 600px !important;}
+
+
+
+body.dark .css-1jk99ih-MuiInputBase-input-MuiOutlinedInput-input, body.dark .css-18pjc51-MuiFormLabel-root-MuiInputLabel-root{color: rgba(255, 255, 255, 0.8) !important;}
