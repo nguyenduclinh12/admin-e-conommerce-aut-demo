@@ -49,3 +49,6 @@ body.light p{font-weight: 400 !important;}
 /* body.dark .css-hmd0fc-MuiRating-root{color: #faaf00 !important;} */
 body.dark .css-1qqgbpl-MuiRating-root span{color: #faaf00 !important;}
 button .loader{width: 25px !important; height: 25px !important;}
+
+.topLoadingBar{height: 3px !important;background: #1866ee !important;}
+body.dark .topLoadingBar{background: #ff4964 !important;}

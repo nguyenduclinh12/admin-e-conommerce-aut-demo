@@ -32,7 +32,7 @@ header .part2{padding-left: 50px;}
 .myAcc .userInfo h6{margin-bottom: 0px;}
 
 body.dark .myAcc .userInfo *{color: rgba(255, 255, 255, 0.8) !important;}
-body.dark .MuiPaper-elevation{background-color: #12254e !important;}
+body.dark .css-1t1j96h-MuiPaper-root-MuiDialog-paper{background-color: #12254e !important;}
 body.dark .MuiPaper-elevation li *, body.dark .MuiPaper-elevation li{color: rgba(255, 255, 255, 0.8) !important;}
 
 

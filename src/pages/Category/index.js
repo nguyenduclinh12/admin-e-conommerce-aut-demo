@@ -21,6 +21,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Link } from "react-router-dom";
+import { MyContext } from "../../App";
 
 // breadcrumb code
 const StyledBreadCrumb = styled(Chip)(({ theme }) => {
@@ -60,6 +61,7 @@ const Category = () => {
   const [catData, setCatData] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const context = useContext(MyContext);
   const [editFields, setEditFields] = useState({
     name: "",
     images: [],
@@ -80,9 +82,11 @@ const Category = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    context.setProgress(20);
     fetchDataFromApi("/api/category").then((res) => {
       setCatData(res);
       console.log(res);
+      context.setProgress(100);
     });
   }, []);
 
@@ -123,6 +127,7 @@ const Category = () => {
 
   const categoryEditFun = (e) => {
     e.preventDefault();
+    context.setProgress(40);
     setIsLoading(true);
     editData(`/api/category/${editId}`, formFields).then((res) => {
       fetchDataFromApi("/api/category").then((res) => {
@@ -130,22 +135,37 @@ const Category = () => {
         setIsLoading(false);
         setOpen(false);
       });
+      context.setProgress(100);
+      context.setAlertBox({
+        open: true,
+        error: false,
+        msg: "Update Category Success !",
+      });
     });
   };
   // delete category
   const deleteCat = (id) => {
+    context.setProgress(40);
     deleteData("/api/category/", id).then((res) => {
       fetchDataFromApi("/api/category").then((res) => {
         setCatData(res);
+      });
+      context.setProgress(100);
+      context.setAlertBox({
+        open: true,
+        error: false,
+        msg: "Delete Category Success !",
       });
     });
   };
 
   // handle change
   const handleChange = (event, value) => {
+    context.setProgress(40);
     fetchDataFromApi(`/api/category?page=${value}`).then((res) => {
       setCatData(res);
       // console.log(res);
+      context.setProgress(100);
     });
   };
 
@@ -280,42 +300,48 @@ const Category = () => {
         <DialogTitle>Edit Category</DialogTitle>
         <form>
           <DialogContent>
-            <TextField
-              autoFocus
-              required
-              margin="dense"
-              id="name"
-              name="name"
-              label="Category Name"
-              type="text"
-              fullWidth
-              value={formFields.name}
-              onChange={changeInput}
-            />
-            <TextField
-              autoFocus
-              required
-              margin="dense"
-              id="images"
-              name="images"
-              label="Category Image"
-              type="text"
-              fullWidth
-              value={formFields.images}
-              onChange={addImgUrl}
-            />
-            <TextField
-              autoFocus
-              required
-              margin="dense"
-              id="color"
-              name="color"
-              label="Category Color"
-              type="text"
-              fullWidth
-              value={formFields.color}
-              onChange={changeInput}
-            />
+            <div className="form-group mb-3">
+              <TextField
+                autoFocus
+                required
+                margin="dense"
+                id="name"
+                name="name"
+                label="Category Name"
+                type="text"
+                fullWidth
+                value={formFields.name}
+                onChange={changeInput}
+              />
+            </div>
+            <div className="form-group mb-3">
+              <TextField
+                autoFocus
+                required
+                margin="dense"
+                id="images"
+                name="images"
+                label="Category Image"
+                type="text"
+                fullWidth
+                value={formFields.images}
+                onChange={addImgUrl}
+              />
+            </div>
+            <div className="form-group mb-3">
+              <TextField
+                autoFocus
+                required
+                margin="dense"
+                id="color"
+                name="color"
+                label="Category Color"
+                type="text"
+                fullWidth
+                value={formFields.color}
+                onChange={changeInput}
+              />
+            </div>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} variant="outlined">

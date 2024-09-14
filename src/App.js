@@ -15,6 +15,9 @@ import Category from "./pages/Category";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 // end alert
+//loading bar
+import LoadingBar from "react-top-loading-bar";
+// end loading bar
 
 const MyContext = createContext();
 function App() {
@@ -29,6 +32,9 @@ function App() {
     open: false,
   });
   // end alert
+  // loading Bar
+  const [progress, setProgress] = useState(0);
+  // end loading bar
 
   useEffect(() => {
     if (themeMode === true) {
@@ -66,11 +72,21 @@ function App() {
     alertBox,
     setAlertBox,
     // end alert
+    // progress bar
+    progress,
+    setProgress,
+    // end prgress bar
   };
   useEffect(() => {}, [isToggleSidebar]);
   return (
     <BrowserRouter>
       <MyContext.Provider value={values}>
+        <LoadingBar
+          color="#f11946"
+          progress={progress}
+          onLoaderFinished={() => setProgress(0)}
+          className="topLoadingBar"
+        />
         {/* alert */}
         <Snackbar
           open={alertBox.open}
