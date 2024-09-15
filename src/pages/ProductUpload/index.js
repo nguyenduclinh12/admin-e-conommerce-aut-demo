@@ -53,6 +53,7 @@ const ProductUpload = () => {
   const [subCatVal, setSubCatVal] = useState("");
   const [ratingsValue, setRatingValue] = useState(1);
   const [productRams, setProductRams] = useState([]);
+  const [isFeatured, setIsFeatured] = useState(false);
 
   // const [formFields, setFormFields] = useState({
   //   name: "",
@@ -72,6 +73,10 @@ const ProductUpload = () => {
       target: { value },
     } = event;
     setProductRams(typeof value === "string" ? value.split(",") : value);
+  };
+
+  const handleChangeIsFeaturedValue = (event) => {
+    setIsFeatured(event.target.value);
   };
 
   // const onChangeInput = (e) => {
@@ -168,10 +173,21 @@ const ProductUpload = () => {
                       </Select>
                     </div>
                   </div>
+
                   <div className="col">
                     <div className="form-group">
-                      <h6>PRICE</h6>
-                      <input type="text" name="price" />
+                      <h6>Is Featured</h6>
+                      <Select
+                        value={isFeatured}
+                        onChange={handleChangeIsFeaturedValue}
+                        displayEmpty
+                        inputProps={{ "aria-label": "Without label" }}
+                        className="w-100"
+                      >
+                        <MenuItem value="">None</MenuItem>
+                        <MenuItem value={true}>True</MenuItem>
+                        <MenuItem value={false}>False</MenuItem>
+                      </Select>
                     </div>
                   </div>
                 </div>
@@ -179,25 +195,20 @@ const ProductUpload = () => {
                 <div className="row">
                   <div className="col">
                     <div className="form-group">
-                      <h6>OLD PRICE</h6>
-                      <input type="text" name="oldPrice" />
+                      <h6>PRICE</h6>
+                      <input type="text" name="price" />
                     </div>
                   </div>
                   <div className="col">
                     <div className="form-group">
-                      <h6>Is Featured</h6>
-                      <Select
-                        // onChange={handleChangeIsFeaturedValue}
-                        displayEmpty
-                        inputProps={{ "aria-label": "Without label" }}
-                        className="w-100"
-                      >
-                        <MenuItem value="">
-                          None
-                        </MenuItem>
-                        <MenuItem value={true}>True</MenuItem>
-                        <MenuItem value={false}>False</MenuItem>
-                      </Select>
+                      <h6>OLD PRICE</h6>
+                      <input type="text" name="oldPrice" />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="form-group">
+                      <h6>DISCOUNT PRICE</h6>
+                      <input type="text" name="discount" />
                     </div>
                   </div>
 
@@ -214,12 +225,6 @@ const ProductUpload = () => {
                     <div className="form-group">
                       <h6>BRAND</h6>
                       <input type="text" name="brand" />
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="form-group">
-                      <h6>DISCOUNT</h6>
-                      <input type="text" name="discount" />
                     </div>
                   </div>
 
@@ -246,7 +251,19 @@ const ProductUpload = () => {
                   <div className="col-md-4">
                     <div className="form-group">
                       <h6>RATINGS</h6>
-                      <Rating name="simple-controlled" />
+                      <Rating
+                        name="simple-controller"
+                        value={ratingsValue}
+                        onChange={(event, newValue) => {
+                          setRatingValue(newValue);
+                        }}
+                      ></Rating>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="form-group">
+                      <h6>PRODUCT STOCK</h6>
+                      <input type="text" />
                     </div>
                   </div>
                 </div>

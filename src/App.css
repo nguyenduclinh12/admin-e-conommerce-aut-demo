@@ -52,3 +52,5 @@ button .loader{width: 25px !important; height: 25px !important;}
 
 .topLoadingBar{height: 3px !important;background: #1866ee !important;}
 body.dark .topLoadingBar{background: #ff4964 !important;}
+body.dark .css-1xomo8h-MuiPaper-root-MuiPopover-paper-MuiMenu-paper{background: #2b3c5f !important;}
+.cursor{cursor: pointer !important;}
