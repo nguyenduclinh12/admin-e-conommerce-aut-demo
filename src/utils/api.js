@@ -20,6 +20,30 @@ export const postData = async (url, formData) => {
     return error;
   }
 };
+export const postUploadImages = async (url, formData) => {
+  try {
+    const res = await axios.post(`http://localhost:4000${url}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return res;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+export const deleteFile = async (url, formData) => {
+  try {
+    const res = await axios.delete(`http://localhost:4000${url}`, formData);
+
+    return res;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
 
 export const editData = async (url, updateFormData) => {
   try {
@@ -35,10 +59,12 @@ export const editData = async (url, updateFormData) => {
 
 export const deleteData = async (url, id) => {
   try {
-    console.log(id)
+    console.log(id);
     const { res } = await axios.delete(`http://localhost:4000${url}${id}`);
     return res;
   } catch (error) {
     return error;
   }
 };
+
+export const UrlServe = "http://localhost:4000";

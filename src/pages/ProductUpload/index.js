@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "./ProductUpload.css";
 import { emphasize, styled } from "@mui/material/styles";
 import Chip from "@mui/material/Chip";
@@ -15,6 +15,9 @@ import { IoCloseSharp } from "react-icons/io5";
 import { FaRegImages } from "react-icons/fa";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import axios from "axios";
+import { deleteFile, postUploadImages, UrlServe } from "./../../utils/api";
+import { MyContext } from "../../App";
 
 // breadcrumb code
 const StyledBreadCrumb = styled(Chip)(({ theme }) => {
@@ -54,6 +57,13 @@ const ProductUpload = () => {
   const [ratingsValue, setRatingValue] = useState(1);
   const [productRams, setProductRams] = useState([]);
   const [isFeatured, setIsFeatured] = useState(false);
+  const context = useContext(MyContext);
+
+  // upload product images
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  // end upload product images
 
   // const [formFields, setFormFields] = useState({
   //   name: "",
@@ -79,12 +89,84 @@ const ProductUpload = () => {
     setIsFeatured(event.target.value);
   };
 
-  // const onChangeInput = (e) => {
-  //   setFormFields(() => ({
-  //     ...formFields,
-  //     [e.target.value]: e.target.value,
-  //   }));
-  // };
+  // upload images
+  const handleFileSelect = async (event) => {
+    context.setProgress(40);
+    const fileList = event.target.files; // day la  object Filelist
+    const fileArray = Array.from(fileList); // chuyen fileList thanh mang
+    // const fileNames = fileArray.map((file) => ({ name: file.name }));
+
+    // thuc hien chuc nang upload file len server
+    try {
+      const formData = new FormData();
+      // them tung file vào FormData
+      for (let i = 0; i < fileArray.length; i++) {
+        formData.append("files", fileArray[i]);
+      }
+      postUploadImages("/api/products/uploadFiles", formData).then((res) => {
+        if (res?.status && res?.status === 200) {
+          // console.log(res);
+          const newImages = Object.values(res.data.files).slice(
+            0,
+            res.data.files.length
+          );
+
+          setSelectedImages((prevSelectedImages) => [
+            ...prevSelectedImages,
+            ...newImages,
+          ]);
+
+          context.setAlertBox({
+            open: true,
+            error: false,
+            msg: "Upload Images Success !",
+          });
+        } else {
+          context.setAlertBox({
+            open: true,
+            error: true,
+            msg: "Upload File Fails : ",
+          });
+        }
+      });
+      context.setProgress(100);
+    } catch (error) {
+      context.setAlertBox({
+        open: true,
+        error: true,
+        msg: "Upload File Fails : " + error,
+      });
+    }
+
+    // lay cac tep
+    // console.log(fileNames); // xuat ra mang ten cac file
+  };
+  // end upload iamges
+  // delete image uploaded
+  console.log(selectedImages);
+  const handleDeleteProductImage = (fileName, event) => {
+    // Lấy block div chứa hình ảnh
+
+    deleteFile("/api/deleteFiles/image", {
+      data: { fileName },
+    }).then((res) => {
+      if (res.status === 200) {
+        // xoá bằng cách remove khỏi state và cập nhật lại
+        setSelectedImages((prevSelectedImages) =>
+          prevSelectedImages.filter((img) => img.filename !== fileName)
+        );
+
+        // // cách 2 xoá bằng cách ẩn đi
+        // const uploadBox = event.currentTarget.closest(".uploadBox");
+        // if (uploadBox) {
+        //   // Thay đổi thuộc tính CSS để ẩn block
+        //   uploadBox.style.display = "none";
+        // }
+      }
+      // console.log(res);
+    });
+  };
+  // end delete image uploaded
   return (
     <>
       <div className="right-content w-100">
@@ -278,22 +360,36 @@ const ProductUpload = () => {
             <div className="imagesUploadSec">
               <h5 className="mb-4">Media And Published</h5>
               <div className="imgUploadBox d-flex align-items-center">
+                {selectedImages?.length !== 0 &&
+                  selectedImages.map((img, index) => (
+                    <div className="uploadBox" key={index}>
+                      <span
+                        className="remove"
+                        onClick={(event) =>
+                          handleDeleteProductImage(img.filename, event)
+                        }
+                      >
+                        <IoCloseSharp />
+                      </span>
+                      <div className="box">
+                        <LazyLoadImage
+                          alt={"image"}
+                          effect="blur"
+                          name="images[]"
+                          src={`${UrlServe}/${img.path}`}
+                        ></LazyLoadImage>
+                      </div>
+                    </div>
+                  ))}
+
                 <div className="uploadBox">
-                  <span className="remove">
-                    <IoCloseSharp />
-                  </span>
-                  <div className="box">
-                    <LazyLoadImage
-                      alt={"image"}
-                      effect="blur"
-                      src={
-                        "https://mironcoder-hotash.netlify.app/images/product/single/01.webp"
-                      }
-                    ></LazyLoadImage>
-                  </div>
-                </div>
-                <div className="uploadBox">
-                  <input type="file" multiple="multiple" name="images" />
+                  <input
+                    type="file"
+                    multiple="multiple"
+                    name="images"
+                    onChange={handleFileSelect}
+                  />
+
                   <div className="info">
                     <FaRegImages></FaRegImages>
                     <h5>image upload</h5>

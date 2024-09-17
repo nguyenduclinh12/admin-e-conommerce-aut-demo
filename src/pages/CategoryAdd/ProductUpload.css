@@ -11,7 +11,7 @@ body.dark .form .form-group input, body.dark .form .form-group textarea{backgrou
 
 
 /* missing row 516 to 530 */
-.imgUploadBox{width: 100%;flex-wrap: nowrap; gap: 10px; padding: 40px !important;}
+.imgUploadBox{width: 100%;flex-wrap: wrap; gap: 10px; padding: 40px !important;}
 .imgUploadBox .uploadBox{
         width: 150px;height: 150px !important; padding: 0px;border-radius: 10px;border: 1px dashed rgba(0, 0, 0, 0.3); position: relative;display: flex;align-items: center;
         justify-content: center; cursor: pointer; 
