@@ -54,3 +54,9 @@ button .loader{width: 25px !important; height: 25px !important;}
 body.dark .topLoadingBar{background: #ff4964 !important;}
 body.dark .css-1xomo8h-MuiPaper-root-MuiPopover-paper-MuiMenu-paper{background: #2b3c5f !important;}
 .cursor{cursor: pointer !important;}
+
+.stickyBox{ position: sticky; top: 90px;}
+.stickyBox h4{font-size: 22px; opacity: 1;}
+.imgGrid{width: 100%; flex-wrap: wrap; gap: 10px;}
+.imgGrid .img{width: 48%; height: 100px; overflow: hidden;border-radius: 7px;}
+.imgGrid .img img{width: 100%; height: 100%; object-fit: cover;}

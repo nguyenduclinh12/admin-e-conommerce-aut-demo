@@ -42,3 +42,5 @@ body.dark .imgUploadBox .uploadBox *{color: rgba(255, 255, 255, 0.7) !important;
 .imgUploadBox .uploadBox .info svg{font-size: 50px; opacity: 0.2;}
 .imgUploadBox .uploadBox .info h5{font-size: 15px; text-align: center; opacity: 0.5;}
 .css-1cprn2g-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root{height: 60px;}
+
+.inputBtn button{position: absolute; top: 7px; right: 10px; z-index: 100;}

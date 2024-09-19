@@ -17,6 +17,7 @@ import Alert from "@mui/material/Alert";
 // end alert
 //loading bar
 import LoadingBar from "react-top-loading-bar";
+import Product from "./pages/Product";
 // end loading bar
 
 const MyContext = createContext();
@@ -129,6 +130,7 @@ function App() {
               ></Route>
               <Route path="/login" exact={true} element={<Login />}></Route>
               <Route path="/signUp" exact={true} element={<SignUp />}></Route>
+              <Route path="/product" exact={true} element={<Product />}></Route>
               <Route
                 path="/product/details"
                 exact={true}
