@@ -24,6 +24,7 @@ import {
   UrlServe,
 } from "./../../utils/api";
 import { MyContext } from "../../App";
+import { useNavigate } from "react-router-dom";
 
 // breadcrumb code
 const StyledBreadCrumb = styled(Chip)(({ theme }) => {
@@ -69,7 +70,30 @@ const ProductUpload = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorsMessage, setErrorsMessage] = useState([]);
 
+  const [files, setFiles] = useState([]);
+  const [imgFiles, setImgFiles] = useState([]);
+  const [previews, setPreviews] = useState();
+  const history = useNavigate();
+
+  // image file select
+  useEffect(() => {
+    if (!imgFiles) return;
+    let tmp = [];
+    for (let i = 0; i < imgFiles.length; i++) {
+      tmp.push({
+        imgPreview: URL.createObjectURL(imgFiles[i]),
+        imgOriginal: imgFiles[i].name,
+      });
+    }
+    const objectUrls = tmp;
+    setPreviews(objectUrls);
+    // free memory
+    return () => {
+      objectUrls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [imgFiles]);
   // upload product images
+
   const [selectedImages, setSelectedImages] = useState([]);
   // const [uploadProgress, setUploadProgress] = useState(0);
   // end upload product images
@@ -80,10 +104,10 @@ const ProductUpload = () => {
     brand: "",
     price: 0,
     oldPrice: 0,
-    category: "",
+    category: null,
     countInStock: 0,
     rating: 0,
-    isFeatured: false,
+    isFeatured: null,
   });
 
   const productImagesRef = useRef();
@@ -104,16 +128,6 @@ const ProductUpload = () => {
       category: event.target.value,
     }));
   };
-  const handleChangeSubCategory = (event) => {
-    setSubCatVal(event.target.value);
-  };
-
-  const handleChangeProductRams = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setProductRams(typeof value === "string" ? value.split(",") : value);
-  };
 
   const handleChangeIsFeaturedValue = (event) => {
     setIsFeatured(event.target.value);
@@ -126,82 +140,101 @@ const ProductUpload = () => {
   // upload images
   const handleFileSelect = async (event) => {
     context.setProgress(40);
-    const fileList = event.target.files; // day la  object Filelist
-    const fileArray = Array.from(fileList); // chuyen fileList thanh mang
-    // const fileNames = fileArray.map((file) => ({ name: file.name }));
+    const fileArray = Array.from(event.target.files); // chuyen object Filelist thanh array
+    const fileNames = fileArray.map((file) => file.name);
 
-    // thuc hien chuc nang upload file len server
-    try {
-      const formData = new FormData();
-      // them tung file vào FormData
-      for (let i = 0; i < fileArray.length; i++) {
-        formData.append("files", fileArray[i]);
-      }
-      postUploadImages("/api/products/uploadFiles", formData).then((res) => {
-        if (res?.status && res?.status === 200) {
-          const newImages = Object.values(res.data.files).slice(
-            0,
-            res.data.files.length
-          );
+    // chức năng upload file mới
+    // gán danh sách file để thực hiện hiển thị preview hình ảnh trước khi upload. dánh sách thêm sau được appent vào danh sách trước
+    setImgFiles((prevImgFiles) => [...prevImgFiles, ...fileArray]);
+    // gan danh sach file de thuc hien upload
+    setFiles((prevFiles) => [...prevFiles, ...fileNames]);
 
-          setSelectedImages((prevSelectedImages) => [
-            ...prevSelectedImages,
-            ...newImages,
-          ]);
+    // // thuc hien chuc nang upload file len server
+    // try {
+    //   const formData = new FormData();
+    //   // them tung file vào FormData
+    //   for (let i = 0; i < fileArray.length; i++) {
+    //     formData.append("files", fileArray[i]);
+    //   }
+    //   postUploadImages("/api/products/uploadFiles", formData).then((res) => {
+    //     if (res?.status && res?.status === 200) {
+    //       const newImages = Object.values(res.data.files).slice(
+    //         0,
+    //         res.data.files.length
+    //       );
 
-          context.setAlertBox({
-            open: true,
-            error: false,
-            msg: "Upload Images Success !",
-          });
-        } else {
-          context.setAlertBox({
-            open: true,
-            error: true,
-            msg: "Upload File Fails : ",
-          });
-        }
-      });
-      context.setProgress(100);
-    } catch (error) {
-      context.setAlertBox({
-        open: true,
-        error: true,
-        msg: "Upload File Fails : " + error,
-      });
-    }
+    //       setSelectedImages((prevSelectedImages) => [
+    //         ...prevSelectedImages,
+    //         ...newImages,
+    //       ]);
+
+    //       context.setAlertBox({
+    //         open: true,
+    //         error: false,
+    //         msg: "Upload Images Success !",
+    //       });
+    //     } else {
+    //       context.setAlertBox({
+    //         open: true,
+    //         error: true,
+    //         msg: "Upload File Fails : ",
+    //       });
+    //     }
+    //   });
+    // } catch (error) {
+    //   context.setAlertBox({
+    //     open: true,
+    //     error: true,
+    //     msg: "Upload File Fails : " + error,
+    //   });
+    // }
 
     // lay cac tep
     // console.log(fileNames); // xuat ra mang ten cac file
+    context.setProgress(100);
   };
+
   // end upload iamges
-  // delete image uploaded
-  const handleDeleteProductImage = (fileName, event) => {
-    // Lấy block div chứa hình ảnh
 
-    deleteFile("/api/deleteFiles/image", {
-      data: { fileName },
-    }).then((res) => {
-      if (res.status === 200) {
-        // xoá bằng cách remove khỏi state và cập nhật lại
-        setSelectedImages((prevSelectedImages) =>
-          prevSelectedImages.filter((img) => img.filename !== fileName)
-        );
+  // // delete image uploaded in server
+  // const handleDeleteProductImage = (fileName, event) => {
+  //   // Lấy block div chứa hình ảnh
 
-        // // cách 2 xoá bằng cách ẩn đi
-        // const uploadBox = event.currentTarget.closest(".uploadBox");
-        // if (uploadBox) {
-        //   // Thay đổi thuộc tính CSS để ẩn block
-        //   uploadBox.style.display = "none";
-        // }
-      }
-    });
+  //   deleteFile("/api/deleteFiles/image", {
+  //     data: { fileName },
+  //   }).then((res) => {
+  //     if (res.status === 200) {
+  //       // xoá bằng cách remove khỏi state và cập nhật lại
+  //       setSelectedImages((prevSelectedImages) =>
+  //         prevSelectedImages.filter((img) => img.filename !== fileName)
+  //       );
+
+  //       // // cách 2 xoá bằng cách ẩn đi
+  //       // const uploadBox = event.currentTarget.closest(".uploadBox");
+  //       // if (uploadBox) {
+  //       //   // Thay đổi thuộc tính CSS để ẩn block
+  //       //   uploadBox.style.display = "none";
+  //       // }
+  //     }
+  //   });
+  // };
+
+  // delete image preview
+  const handelDeleteProductImagePreview = (fileName, event) => {
+    try {
+      setImgFiles((prevImgFiles) =>
+        prevImgFiles.filter((img) => img.name !== fileName)
+      );
+      setFiles((prevFiles) => prevFiles.filter((img) => img.name !== fileName));
+    } catch (error) {}
   };
+  // console.log(imgFiles);
+  // console.log(previews);
   // end delete image uploaded
 
   // upload image for add link
   const addProductImages = () => {
-    console.log(productImagesRef.current.value);
+    // console.log(productImagesRef.current.value);
     if (productImagesRef.current.value !== "") {
       setImagesSelect((prevImagesSelect) => [
         ...prevImagesSelect,
@@ -236,72 +269,175 @@ const ProductUpload = () => {
       [e.target.name]: e.target.value,
     }));
   };
-  const handleSubmitForm = (e) => {
+  const handleSubmitForm = async (e) => {
     e.preventDefault();
 
+    // console.log(formFields);
+
     if (formFields.name === "") {
-      addErrorMessage("Name is missing");
+      context.setAlertBox({
+        open: true,
+        msg: "Name is missing",
+        error: true,
+      });
+      return false;
     }
     if (formFields.description === "") {
-      addErrorMessage("Description is missing");
+      context.setAlertBox({
+        open: true,
+        msg: "Description is missing",
+        error: true,
+      });
+      return false;
     }
     if (formFields.brand === "") {
-      addErrorMessage("brand is missing");
+      context.setAlertBox({
+        open: true,
+        msg: "brand is missing",
+        error: true,
+      });
+      return false;
     }
     if (formFields.price === 0 || formFields.price === "") {
-      addErrorMessage("Price is missing");
+      context.setAlertBox({
+        open: true,
+        msg: "Price is missing",
+        error: true,
+      });
+      return false;
     }
     if (formFields.oldPrice === 0 || formFields.oldPrice === "") {
-      addErrorMessage("Old Price is missing");
+      context.setAlertBox({
+        open: true,
+        msg: "Old Price is missing",
+        error: true,
+      });
+      return false;
     }
     if (formFields.category === 0 || formFields.category === "") {
-      addErrorMessage("category is missing");
+      context.setAlertBox({
+        open: true,
+        msg: "category is missing",
+        error: true,
+      });
+      return false;
     }
     if (formFields.countInStock === "" || formFields.countInStock === 0) {
-      addErrorMessage("Count In Stock is missing");
+      context.setAlertBox({
+        open: true,
+        msg: "Count In Stock is missing",
+        error: true,
+      });
+      return false;
     }
     if (formFields.isFeatured === 0) {
-      addErrorMessage("Is Featured is missing");
-    }
-    if (formFields.images.length === 0) {
-      addErrorMessage("Image is missing");
+      context.setAlertBox({
+        open: true,
+        msg: "Is Featured is missing",
+        error: true,
+      });
+      return false;
     }
 
-    if (errorsMessage?.length !== 0) {
-      errorsMessage.forEach((message, index) => {
-        context.setAlertBox({
-          open: true,
-          msg: message,
-          error: true,
-        });
+    if (files.length === 0) {
+      context.setAlertBox({
+        open: true,
+        msg: "Image is missing",
+        error: true,
       });
-    } else {
+      return false;
+    }
+
+    // upload image
+    // thuc hien chuc nang upload file len server
+    try {
+      context.setProgress(40);
       setIsLoading(true);
-      formFields.images = imagesSelect;
-      postData("/api/products/create", formFields).then((res) => {
+      const formData = new FormData();
+      // them tung file vào FormData
+      for (let i = 0; i < imgFiles.length; i++) {
+        formData.append("files", imgFiles[i]);
+      }
+      let resultUploadImage = { status: false, data: [] };
+      await postUploadImages("/api/products/uploadFiles", formData).then(
+        (res) => {
+          if (res?.status && res?.status === 200) {
+            const newImages = Object.values(res.data.files).slice(
+              0,
+              res.data.files.length
+            );
+
+            setSelectedImages((prevSelectedImages) => [
+              ...prevSelectedImages,
+              ...newImages,
+            ]);
+
+            // context.setAlertBox({
+            //   open: true,
+            //   error: false,
+            //   msg: "Upload Images Success !",
+            // });
+
+            resultUploadImage.status = true;
+            resultUploadImage.data = res.data.files;
+          } else {
+            context.setAlertBox({
+              open: true,
+              error: true,
+              msg: "Upload File Fails : ",
+            });
+          }
+        }
+      );
+
+      if (resultUploadImage.status === true) {
+        // // dành cho gán danh sách image link
+        // formFields.images = imagesSelect;
+        // dành cho dán danh sách image upload preview
+        formFields.images = resultUploadImage.data;
+        await postData("/api/products/create", formFields).then((res) => {
+          setFormFields({
+            name: "",
+            description: "",
+            images: [],
+            brand: "",
+            price: 0,
+            oldPrice: 0,
+            category: null,
+            countInStock: 0,
+            discount: 0,
+            rating: 0,
+            isFeatured: null,
+          });
+          setImgFiles([]);
+          context.setAlertBox({
+            open: true,
+            msg: "The Product is created !",
+            error: false,
+          });
+
+          history("/product");
+        });
+      } else {
         context.setAlertBox({
           open: true,
-          msg: "The Product is created !",
-          error: false,
+          error: true,
+          msg: "Upload Image Fails  ",
         });
-        setIsLoading(false);
+      }
 
-        setFormFields({
-          name: "",
-          description: "",
-          images: [],
-          brand: "",
-          price: 0,
-          oldPrice: 0,
-          category: "",
-          countInStock: 0,
-          rating: 0,
-          isFeatured: false,
-        });
+      // end upload image
+    } catch (error) {
+      context.setAlertBox({
+        open: true,
+        error: true,
+        msg: "Upload File Fails : " + error,
       });
     }
-  };
 
+    setIsLoading(false);
+    context.setProgress(100);
+  };
   return (
     <>
       <div className="right-content w-100">
@@ -359,16 +495,14 @@ const ProductUpload = () => {
                     <div className="form-group">
                       <h6>CATEGORY</h6>
                       <Select
-                        value={categoryVal}
+                        value={formFields.category}
                         onChange={handleChangeCategory}
                         displayEmpty
                         inputProps={{ "aria-label": "Without label" }}
                         className="w-100"
                         name="category"
                       >
-                        <MenuItem value={null}>
-                          <em>None</em>
-                        </MenuItem>
+                        <MenuItem value={null}>None</MenuItem>
                         {Array.isArray(catData?.categoryList) &&
                           catData?.categoryList?.length !== 0 &&
                           catData?.categoryList?.map((cat, index) => {
@@ -413,7 +547,7 @@ const ProductUpload = () => {
                     <div className="form-group">
                       <h6>Is Featured</h6>
                       <Select
-                        value={isFeatured}
+                        value={formFields.isFeatured}
                         onChange={handleChangeIsFeaturedValue}
                         displayEmpty
                         inputProps={{ "aria-label": "Without label" }}
@@ -488,26 +622,6 @@ const ProductUpload = () => {
                       />
                     </div>
                   </div>
-
-                  {/* <div className="col-md-4">
-                    <div className="form-group">
-                      <h6>PRODUCT RAMS</h6>
-                      <Select
-                        multiple
-                        value={productRams}
-                        onChange={handleChangeProductRams}
-                        displayEmpty
-                        className="w-100"
-                        MenuProps={MenuProps}
-                        name="productRams"
-                      >
-                        <MenuItem value={4}>4GB</MenuItem>
-                        <MenuItem value={8}>8GB</MenuItem>
-                        <MenuItem value={10}>10GB</MenuItem>
-                        <MenuItem value={12}>12GB</MenuItem>
-                      </Select>
-                    </div>
-                  </div> */}
                 </div>
                 <div className="row">
                   <div className="col-md-4">
@@ -526,12 +640,6 @@ const ProductUpload = () => {
                       ></Rating>
                     </div>
                   </div>
-                  {/* <div className="col-md-4">
-                    <div className="form-group">
-                      <h6>PRODUCT STOCK</h6>
-                      <input type="text" name="productStock" />
-                    </div>
-                  </div> */}
                 </div>
                 <div className="row">
                   <div className="col">
@@ -552,10 +660,6 @@ const ProductUpload = () => {
                     </div>
                   </div>
                 </div>
-
-                {/* <Button className="btn-blue btn-lg btn-big">
-                  <FaCloudUploadAlt></FaCloudUploadAlt> &nbsp; PUBLISH AND VIEW
-                </Button> */}
               </div>
             </div>
             <div className="col-sm-3">
@@ -568,7 +672,7 @@ const ProductUpload = () => {
           <div className="card p-4 mt-0">
             <div className="imagesUploadSec">
               <h5 className="mb-4">Media And Published</h5>
-              <div className="imgUploadBox d-flex align-items-center">
+              {/* <div className="imgUploadBox d-flex align-items-center">
                 {selectedImages?.length !== 0 &&
                   selectedImages.map((img, index) => (
                     <div className="uploadBox" key={index}>
@@ -605,6 +709,61 @@ const ProductUpload = () => {
                   </div>
                 </div>
               </div>
+               */}
+              <div className="imgUploadBox d-flex align-items-center">
+                {previews?.length !== 0 &&
+                  previews?.map((img, index) => (
+                    <div className="uploadBox" key={index}>
+                      <span
+                        className="remove"
+                        onClick={(event) =>
+                          handelDeleteProductImagePreview(
+                            img.imgOriginal,
+                            event
+                          )
+                        }
+                      >
+                        <IoCloseSharp />
+                      </span>
+                      <div className="box">
+                        <LazyLoadImage
+                          alt={"image"}
+                          effect="blur"
+                          name="images[]"
+                          src={img.imgPreview}
+                        ></LazyLoadImage>
+                      </div>
+                    </div>
+                  ))}
+
+                {/* <div className="uploadBox">
+                  <input
+                    type="file"
+                    multiple="multiple"
+                    name="images"
+                    onChange={handleFileSelect}
+                  />
+
+                  <div className="info">
+                    <FaRegImages></FaRegImages>
+                    <h5>image upload</h5>
+                  </div>
+                </div> */}
+                <div className="uploadBox">
+                  <input
+                    type="file"
+                    multiple="multiple"
+                    name="images"
+                    onChange={handleFileSelect}
+                  />
+
+                  <div className="info">
+                    <FaRegImages></FaRegImages>
+                    <h5>image upload</h5>
+                  </div>
+                </div>
+              </div>
+
               <br />
 
               <Button className="btn-blue btn-lg btn-big w-100" type="submit">

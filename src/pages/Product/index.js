@@ -13,7 +13,12 @@ import {
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import Pagination from "@mui/material/Pagination";
-import { deleteData, editData, fetchDataFromApi } from "./../../utils/api";
+import {
+  deleteData,
+  editData,
+  fetchDataFromApi,
+  UrlServe,
+} from "./../../utils/api";
 
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -58,7 +63,7 @@ export const options = {
 };
 
 const Product = () => {
-  const [prodData, setProdData] = useState([]);
+  const [productList, setProductList] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const context = useContext(MyContext);
@@ -80,8 +85,8 @@ const Product = () => {
     window.scrollTo(0, 0);
     context.setProgress(20);
     fetchDataFromApi("/api/products").then((res) => {
-      setProdData(res);
       console.log(res);
+      setProductList(res);
       context.setProgress(100);
     });
   }, []);
@@ -110,14 +115,13 @@ const Product = () => {
     });
     setOpen(true);
     setEditId(id);
-    fetchDataFromApi(`/api/Product/${id}`).then((res) => {
+    fetchDataFromApi(`/api/products/${id}`).then((res) => {
       // setEditFields({name:res.name, images:res.images, color:res.color});
       setFormFields({
         name: res.name,
         images: res.images,
         color: res.color,
       });
-      console.log(res);
     });
   };
 
@@ -125,9 +129,9 @@ const Product = () => {
     e.preventDefault();
     context.setProgress(40);
     setIsLoading(true);
-    editData(`/api/Product/${editId}`, formFields).then((res) => {
-      fetchDataFromApi("/api/Product").then((res) => {
-        setProdData(res);
+    editData(`/api/products/${editId}`, formFields).then((res) => {
+      fetchDataFromApi("/api/products").then((res) => {
+        setProductList(res);
         setIsLoading(false);
         setOpen(false);
       });
@@ -140,11 +144,11 @@ const Product = () => {
     });
   };
   // delete Product
-  const deleteCat = (id) => {
+  const deleteProduct = (id) => {
     context.setProgress(40);
-    deleteData("/api/Product/", id).then((res) => {
-      fetchDataFromApi("/api/Product").then((res) => {
-        setProdData(res);
+    deleteData(`/api/products`, id).then((res) => {
+      fetchDataFromApi("/api/products").then((res) => {
+        setProductList(res);
       });
       context.setProgress(100);
       context.setAlertBox({
@@ -159,8 +163,7 @@ const Product = () => {
   const handleChange = (event, value) => {
     context.setProgress(40);
     fetchDataFromApi(`/api/Product?page=${value}`).then((res) => {
-      setProdData(res);
-      // console.log(res);
+      setProductList(res);
       context.setProgress(100);
     });
   };
@@ -207,8 +210,9 @@ const Product = () => {
                 </tr>
               </thead>
               <tbody>
-                {prodData?.length !== 0 &&
-                  prodData?.map((item, index) => {
+                {Array.isArray(productList) &&
+                  productList?.length !== 0 &&
+                  productList?.map((item, index) => {
                     return (
                       <tr key={index}>
                         <td>
@@ -223,7 +227,7 @@ const Product = () => {
                             <div className="imgWrapper">
                               <div className="img">
                                 <img
-                                  src={item.images[0]}
+                                  src={`${UrlServe}/${item.images[0]}`}
                                   alt=""
                                   className="w-100"
                                 />
@@ -245,14 +249,14 @@ const Product = () => {
                             <Button
                               className="success"
                               color="success"
-                              onClick={() => editProduct(item._id)}
+                              onClick={() => editProduct(item.id)}
                             >
                               <FaPencilAlt></FaPencilAlt>
                             </Button>
                             <Button
                               className="error"
                               color="error"
-                              onClick={() => deleteCat(item._id)}
+                              onClick={() => deleteProduct(item.id)}
                             >
                               <MdDelete></MdDelete>
                             </Button>
@@ -265,7 +269,7 @@ const Product = () => {
             </table>
             <div className="d-flex tableFooter">
               <Pagination
-                count={prodData?.totalPages}
+                count={productList?.totalPages}
                 color="primary"
                 className="pagination"
                 showFirstButton
@@ -288,7 +292,7 @@ const Product = () => {
             const formData = new FormData(event.currentTarget);
             const formJson = Object.fromEntries(formData.entries());
             const email = formJson.email;
-            console.log(email);
+
             handleClose();
           },
         }}

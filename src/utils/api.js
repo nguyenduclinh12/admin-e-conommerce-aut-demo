@@ -59,8 +59,8 @@ export const editData = async (url, updateFormData) => {
 
 export const deleteData = async (url, id) => {
   try {
-    console.log(id);
-    const { res } = await axios.delete(`http://localhost:4000${url}${id}`);
+    // console.log(url);
+    const { res } = await axios.delete(`http://localhost:4000${url}/${id}`);
     return res;
   } catch (error) {
     return error;
