@@ -13,7 +13,12 @@ import {
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import Pagination from "@mui/material/Pagination";
-import { deleteData, editData, fetchDataFromApi } from "./../../utils/api";
+import {
+  deleteData,
+  editData,
+  fetchDataFromApi,
+  UrlServe,
+} from "./../../utils/api";
 
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -229,7 +234,7 @@ const Category = () => {
                             <div className="imgWrapper">
                               <div className="img">
                                 <img
-                                  src={item.images[0]}
+                                  src={`${UrlServe}/${item.images[0]}`}
                                   alt=""
                                   className="w-100"
                                 />
@@ -246,13 +251,15 @@ const Category = () => {
                               </Button>
                             </Link> */}
 
-                            <Button
-                              className="success"
-                              color="success"
-                              onClick={() => editCategory(item._id)}
-                            >
-                              <FaPencilAlt></FaPencilAlt>
-                            </Button>
+                            <Link to={`/category/edit/${item.id}`}>
+                              <Button
+                                className="success"
+                                color="success"
+                                // onClick={() => editCategory(item._id)}
+                              >
+                                <FaPencilAlt></FaPencilAlt>
+                              </Button>
+                            </Link>
                             <Button
                               className="error"
                               color="error"

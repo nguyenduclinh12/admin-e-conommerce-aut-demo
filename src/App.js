@@ -9,7 +9,7 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import ProductDetails from "./pages/ProductDetails";
 import ProductUpload from "./pages/ProductUpload";
-import CategoryAdd from "./pages/CategoryAdd";
+import CategoryAdd from "./pages/Category/CategoryAdd";
 import Category from "./pages/Category";
 // alert
 import Snackbar from "@mui/material/Snackbar";
@@ -18,6 +18,7 @@ import Alert from "@mui/material/Alert";
 //loading bar
 import LoadingBar from "react-top-loading-bar";
 import Product from "./pages/Product";
+import CategoryEdit from "./pages/Category/CategoryEdit";
 // end loading bar
 
 const MyContext = createContext();
@@ -150,6 +151,11 @@ function App() {
                 path="/category/add"
                 exact={true}
                 element={<CategoryAdd />}
+              ></Route>
+              <Route
+                path="/category/edit/:id"
+                exact={true}
+                element={<CategoryEdit />}
               ></Route>
             </Routes>
           </div>

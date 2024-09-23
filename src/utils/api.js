@@ -13,8 +13,7 @@ export const fetchDataFromApi = async (url) => {
 
 export const postData = async (url, formData) => {
   try {
-    const { res } = await axios.post("http://localhost:4000" + url, formData);
-    return res;
+    return await axios.post("http://localhost:4000" + url, formData);
   } catch (error) {
     console.log(error);
     return error;
@@ -40,7 +39,7 @@ export const deleteFile = async (url, formData) => {
 
     return res;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return error;
   }
 };
@@ -59,11 +58,11 @@ export const editData = async (url, updateFormData) => {
 
 export const deleteData = async (url, id) => {
   try {
-    // console.log(url);
-    const { res } = await axios.delete(`http://localhost:4000${url}/${id}`);
+    console.log(url);
+    const { res } = await axios.delete(`http://localhost:4000${url}${id}`);
     return res;
   } catch (error) {
-    return error;
+    throw error.response ? error.response : error;
   }
 };
 
