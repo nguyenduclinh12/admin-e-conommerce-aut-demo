@@ -4,9 +4,9 @@ import { emphasize, styled } from "@mui/material/styles";
 import Chip from "@mui/material/Chip";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import HomeIcon from "@mui/icons-material/Home";
-import { Button, CircularProgress } from "@mui/material";
+import { Button, CircularProgress, MenuItem, Select } from "@mui/material";
 import { FaCloudUploadAlt } from "react-icons/fa";
-import { postData, postUploadImages } from "../../utils/api";
+import { fetchDataFromApi, postData, postUploadImages } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { MyContext } from "../../App";
 import { IoCloseSharp } from "react-icons/io5";
@@ -38,11 +38,12 @@ const StyledBreadCrumb = styled(Chip)(({ theme }) => {
 
 const CategoryAdd = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [files, setFiles] = useState([]);
+  // const [files, setFiles] = useState([]);
   const [imgFiles, setImgFiles] = useState([]);
   const [previews, setPreviews] = useState();
   const history = useNavigate();
   const context = useContext(MyContext);
+
   // image file select
   useEffect(() => {
     if (!imgFiles) return;
@@ -63,6 +64,7 @@ const CategoryAdd = () => {
 
   const [formFields, setFormFields] = useState({
     name: "",
+    parent: null,
     images: [],
     color: "",
   });
@@ -73,15 +75,21 @@ const CategoryAdd = () => {
       [e.target.name]: e.target.value,
     }));
   };
-
+  // set cat value select
+  const handleChangeCategory = (event) => {
+    setFormFields(() => ({
+      ...formFields,
+      parent: event.target.value,
+    }));
+  };
   // upload images
   const handleFileSelect = async (event) => {
     context.setProgress(40);
     const fileArray = Array.from(event.target.files);
-    const fileNames = fileArray.map((file) => file.name);
+    // const fileNames = fileArray.map((file) => file.name);
 
     setImgFiles((prevImgFiles) => [...prevImgFiles, ...fileArray]);
-    setFiles((prevFiles) => [...prevFiles, ...fileNames]);
+    // setFiles((prevFiles) => [...prevFiles, ...fileNames]);
     context.setProgress(100);
   };
 
@@ -91,7 +99,7 @@ const CategoryAdd = () => {
       setImgFiles((prevImgFiles) =>
         prevImgFiles.filter((img) => img.name !== fileName)
       );
-      setFiles((prevFiles) => prevFiles.filter((img) => img.name !== fileName));
+      // setFiles((prevFiles) => prevFiles.filter((img) => img.name !== fileName));
     } catch (error) {}
   };
 
@@ -129,6 +137,7 @@ const CategoryAdd = () => {
         );
         if (resultUploadImage.status === true) {
           formFields.images = resultUploadImage.data;
+          console.log(formFields);
           postData("/api/category/create", formFields).then((res) => {
             if (res?.response?.status) {
               // alert
@@ -208,6 +217,32 @@ const CategoryAdd = () => {
                 <div className="form-group">
                   <h6>Category Name</h6>
                   <input type="text" name="name" onChange={changeInput} />
+                </div>
+                <div className="form-group">
+                  <h6>Parent</h6>
+                  <Select
+                    value={formFields.parent}
+                    onChange={handleChangeCategory}
+                    displayEmpty
+                    inputProps={{ "aria-label": "Without label" }}
+                    className="w-100"
+                    name="category"
+                  >
+                    <MenuItem value={null}>None</MenuItem>
+                    {Array.isArray(context.catData?.categoryList) &&
+                      context.catData?.categoryList?.length !== 0 &&
+                      context.catData?.categoryList?.map((cat, index) => {
+                        return (
+                          <MenuItem
+                            key={index}
+                            value={cat._id}
+                            className="text-capitalize"
+                          >
+                            {cat.name}
+                          </MenuItem>
+                        );
+                      })}
+                  </Select>
                 </div>
 
                 <div className="form-group">

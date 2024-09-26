@@ -4,7 +4,7 @@ import { emphasize, styled } from "@mui/material/styles";
 import Chip from "@mui/material/Chip";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import HomeIcon from "@mui/icons-material/Home";
-import { Button, CircularProgress } from "@mui/material";
+import { Button, CircularProgress, MenuItem, Select } from "@mui/material";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import {
   deleteFile,
@@ -59,9 +59,17 @@ const CategoryEdit = () => {
   const [imgFiles, setImgFiles] = useState([]);
   const [previews, setPreviews] = useState();
   const [imageDelete, setImageDelete] = useState([]);
+  // const [catData, setCatData] = useState([]);
   const history = useNavigate();
   const context = useContext(MyContext);
   let { id } = useParams();
+  const [formFields, setFormFields] = useState({
+    name: "",
+    parent: null,
+    images: [],
+    color: "",
+  });
+
   // image file select
   useEffect(() => {
     if (!imgFiles) return;
@@ -91,22 +99,17 @@ const CategoryEdit = () => {
   useEffect(() => {
     context.setProgress(40);
     fetchDataFromApi(`/api/category/${id}`).then((res) => {
-      // console.log(res);
       setFormFields({
         name: res.name,
+        parent: res.parent,
         color: res.color,
       });
 
       setFilesEdit(res.images);
-      context.setProgress(100);
     });
+    context.setProgress(100);
   }, []);
-
-  const [formFields, setFormFields] = useState({
-    name: "",
-    images: [],
-    color: "",
-  });
+  console.log(formFields);
 
   const changeInput = (e) => {
     setFormFields(() => ({
@@ -159,6 +162,13 @@ const CategoryEdit = () => {
       console.log(err);
     }
   };
+  // set cat value select
+  const handleChangeCategory = (event) => {
+    setFormFields(() => ({
+      ...formFields,
+      parent: event.target.value,
+    }));
+  };
 
   // delete image from server
   const deleteImageServer = async () => {
@@ -193,7 +203,6 @@ const CategoryEdit = () => {
             console.log(resultDeleteImage);
             throw resultDeleteImage?.response?.data?.message;
           }
-          console.log(resultDeleteImage);
         }
         let resultUploadImage = { status: false, data: [] };
         if (imgFiles.length !== 0) {
@@ -221,27 +230,18 @@ const CategoryEdit = () => {
         }
 
         // merger image deleted list vs resultUploadImage
-        console.log(handleFormatImages(resultUploadImage.data));
         formFields.images = handleFormatImages(resultUploadImage.data);
 
         await editData(`/api/category/${id}`, formFields).then((res) => {
           if (res?.response?.status) {
             throw res?.response?.data.message;
           }
-          setFormFields({
-            name: "",
-            color: "",
-            images: [],
-          });
-          setIsLoading(false);
-          setImgFiles([]);
+
           context.setAlertBox({
             open: true,
             msg: "The Category is Updated !",
             error: false,
           });
-
-          // history("/category");
         });
       } catch (error) {
         context.setAlertBox({
@@ -299,6 +299,32 @@ const CategoryEdit = () => {
                     value={formFields.name}
                     onChange={changeInput}
                   />
+                </div>
+                <div className="form-group">
+                  <h6>Parent</h6>
+                  <Select
+                    value={formFields.parent}
+                    onChange={handleChangeCategory}
+                    displayEmpty
+                    inputProps={{ "aria-label": "Without label" }}
+                    className="w-100"
+                    name="category"
+                  >
+                    <MenuItem value={null}>None</MenuItem>
+                    {Array.isArray(context.catData?.categoryList) &&
+                      context.catData?.categoryList?.length !== 0 &&
+                      context.catData?.categoryList?.map((cat, index) => {
+                        return (
+                          <MenuItem
+                            key={index}
+                            value={cat._id}
+                            className="text-capitalize"
+                          >
+                            {cat.name}
+                          </MenuItem>
+                        );
+                      })}
+                  </Select>
                 </div>
 
                 <div className="form-group">

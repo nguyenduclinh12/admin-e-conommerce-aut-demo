@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import "./ProductUpload.css";
+import "./ProductAdd.css";
 import { emphasize, styled } from "@mui/material/styles";
 import Chip from "@mui/material/Chip";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
@@ -22,7 +22,7 @@ import {
   postData,
   postUploadImages,
   UrlServe,
-} from "./../../utils/api";
+} from "../../utils/api";
 import { MyContext } from "../../App";
 import { useNavigate } from "react-router-dom";
 
@@ -58,22 +58,32 @@ const MenuProps = {
   },
 };
 
-const ProductUpload = () => {
-  const [categoryVal, setCategoryVal] = useState("");
-  const [subCatVal, setSubCatVal] = useState("");
-  const [ratingsValue, setRatingValue] = useState(1);
-  const [productRams, setProductRams] = useState([]);
-  const [isFeatured, setIsFeatured] = useState("");
-  const [catData, setCatData] = useState([]);
-  const context = useContext(MyContext);
-  const [imagesSelect, setImagesSelect] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorsMessage, setErrorsMessage] = useState([]);
+const ProductAdd = () => {
+  const [subCat, setSubCat] = useState([]);
+  const [valSubCat, setValSubCat] = useState(null);
 
-  const [files, setFiles] = useState([]);
+  const [ratingsValue, setRatingValue] = useState(1);
+  const [isFeatured, setIsFeatured] = useState("");
+  // const [catData, setCatData] = useState([]);
+  const context = useContext(MyContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const productImagesRef = useRef();
+
   const [imgFiles, setImgFiles] = useState([]);
   const [previews, setPreviews] = useState();
   const history = useNavigate();
+  const [formFields, setFormFields] = useState({
+    name: "",
+    description: "",
+    images: [],
+    brand: "",
+    price: 0,
+    oldPrice: 0,
+    category: null,
+    countInStock: 0,
+    rating: 0,
+    isFeatured: null,
+  });
 
   // image file select
   useEffect(() => {
@@ -92,42 +102,53 @@ const ProductUpload = () => {
       objectUrls.forEach((url) => URL.revokeObjectURL(url));
     };
   }, [imgFiles]);
-  // upload product images
+  // upload images
+  const handleFileSelect = async (event) => {
+    context.setProgress(40);
+    const fileArray = Array.from(event.target.files); // chuyen object Filelist thanh array
+    // gán danh sách file để thực hiện hiển thị preview hình ảnh trước khi upload. dánh sách thêm sau được appent vào danh sách trước
+    setImgFiles((prevImgFiles) => [...prevImgFiles, ...fileArray]);
+    context.setProgress(100);
+  };
 
-  const [selectedImages, setSelectedImages] = useState([]);
-  // const [uploadProgress, setUploadProgress] = useState(0);
-  // end upload product images
-  const [formFields, setFormFields] = useState({
-    name: "",
-    description: "",
-    images: [],
-    brand: "",
-    price: 0,
-    oldPrice: 0,
-    category: null,
-    countInStock: 0,
-    rating: 0,
-    isFeatured: null,
-  });
+  // delete image preview
+  const handelDeleteProductImagePreview = (fileName, event) => {
+    try {
+      setImgFiles((prevImgFiles) =>
+        prevImgFiles.filter((img) => img.name !== fileName)
+      );
+    } catch (error) {}
+  };
 
-  const productImagesRef = useRef();
+  function FormDataImage() {
+    const formData = new FormData();
+    // them tung file vào FormData
+    for (let i = 0; i < imgFiles.length; i++) {
+      formData.append("files", imgFiles[i]);
+    }
+    return formData;
+  }
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    context.setProgress(20);
-    fetchDataFromApi("/api/category").then((res) => {
-      setCatData(res);
-      context.setProgress(100);
-    });
-  }, []);
-
-  const handleChangeCategory = (event) => {
-    setCategoryVal(event.target.value);
+  const handleChangeCategory = async (event) => {
+    // setCategoryVal(event.target.value);
     setFormFields(() => ({
       ...formFields,
       category: event.target.value,
     }));
+    //get subcategory
+    const resultSubcategory = await fetchDataFromApi(
+      `/api/category/subcategory/${event.target.value}`
+    );
+    if (resultSubcategory.length !== 0) {
+      setSubCat(resultSubcategory);
+    }
   };
+
+  const handleChangeSubCategory = async (event) => {
+    // setCategoryVal(event.target.value);
+    setValSubCat(event.target.value);
+  };
+  console.log(formFields);
 
   const handleChangeIsFeaturedValue = (event) => {
     setIsFeatured(event.target.value);
@@ -136,132 +157,27 @@ const ProductUpload = () => {
       isFeatured: event.target.value,
     }));
   };
-
-  // upload images
-  const handleFileSelect = async (event) => {
-    context.setProgress(40);
-    const fileArray = Array.from(event.target.files); // chuyen object Filelist thanh array
-    const fileNames = fileArray.map((file) => file.name);
-
-    // chức năng upload file mới
-    // gán danh sách file để thực hiện hiển thị preview hình ảnh trước khi upload. dánh sách thêm sau được appent vào danh sách trước
-    setImgFiles((prevImgFiles) => [...prevImgFiles, ...fileArray]);
-    // gan danh sach file de thuc hien upload
-    setFiles((prevFiles) => [...prevFiles, ...fileNames]);
-
-    // // thuc hien chuc nang upload file len server
-    // try {
-    //   const formData = new FormData();
-    //   // them tung file vào FormData
-    //   for (let i = 0; i < fileArray.length; i++) {
-    //     formData.append("files", fileArray[i]);
-    //   }
-    //   postUploadImages("/api/products/uploadFiles", formData).then((res) => {
-    //     if (res?.status && res?.status === 200) {
-    //       const newImages = Object.values(res.data.files).slice(
-    //         0,
-    //         res.data.files.length
-    //       );
-
-    //       setSelectedImages((prevSelectedImages) => [
-    //         ...prevSelectedImages,
-    //         ...newImages,
-    //       ]);
-
-    //       context.setAlertBox({
-    //         open: true,
-    //         error: false,
-    //         msg: "Upload Images Success !",
-    //       });
-    //     } else {
-    //       context.setAlertBox({
-    //         open: true,
-    //         error: true,
-    //         msg: "Upload File Fails : ",
-    //       });
-    //     }
-    //   });
-    // } catch (error) {
-    //   context.setAlertBox({
-    //     open: true,
-    //     error: true,
-    //     msg: "Upload File Fails : " + error,
-    //   });
-    // }
-
-    // lay cac tep
-    // console.log(fileNames); // xuat ra mang ten cac file
-    context.setProgress(100);
-  };
-
-  // end upload iamges
-
-  // // delete image uploaded in server
-  // const handleDeleteProductImage = (fileName, event) => {
-  //   // Lấy block div chứa hình ảnh
-
-  //   deleteFile("/api/deleteFiles/image", {
-  //     data: { fileName },
-  //   }).then((res) => {
-  //     if (res.status === 200) {
-  //       // xoá bằng cách remove khỏi state và cập nhật lại
-  //       setSelectedImages((prevSelectedImages) =>
-  //         prevSelectedImages.filter((img) => img.filename !== fileName)
-  //       );
-
-  //       // // cách 2 xoá bằng cách ẩn đi
-  //       // const uploadBox = event.currentTarget.closest(".uploadBox");
-  //       // if (uploadBox) {
-  //       //   // Thay đổi thuộc tính CSS để ẩn block
-  //       //   uploadBox.style.display = "none";
-  //       // }
-  //     }
-  //   });
-  // };
-
-  // delete image preview
-  const handelDeleteProductImagePreview = (fileName, event) => {
-    try {
-      setImgFiles((prevImgFiles) =>
-        prevImgFiles.filter((img) => img.name !== fileName)
-      );
-      setFiles((prevFiles) => prevFiles.filter((img) => img.name !== fileName));
-    } catch (error) {}
-  };
-  // console.log(imgFiles);
-  // console.log(previews);
-  // end delete image uploaded
-
   // upload image for add link
-  const addProductImages = () => {
-    // console.log(productImagesRef.current.value);
-    if (productImagesRef.current.value !== "") {
-      setImagesSelect((prevImagesSelect) => [
-        ...prevImagesSelect,
-        productImagesRef.current.value,
-      ]);
+  // const addProductImages = () => {
+  //   // console.log(productImagesRef.current.value);
+  //   if (productImagesRef.current.value !== "") {
+  //     setImagesSelect((prevImagesSelect) => [
+  //       ...prevImagesSelect,
+  //       productImagesRef.current.value,
+  //     ]);
 
-      const imgGrid = document.querySelector("#imgGrid");
-      const imgData = `
-              <div class="img">
-                <img src="${productImagesRef.current.value}" alt="" class="w-100"/>
-              </div>
-    `;
-      imgGrid.insertAdjacentHTML("beforeend", imgData);
-      productImagesRef.current.value = "";
-    }
-  };
-  // end upload image for add link
+  //     const imgGrid = document.querySelector("#imgGrid");
+  //     const imgData = `
+  //             <div class="img">
+  //               <img src="${productImagesRef.current.value}" alt="" class="w-100"/>
+  //             </div>
+  //   `;
+  //     imgGrid.insertAdjacentHTML("beforeend", imgData);
+  //     productImagesRef.current.value = "";
+  //   }
+  // };
+  // // end upload image for add link
 
-  const addErrorMessage = (newMessage) => {
-    setErrorsMessage((prevMessages) => {
-      if (prevMessages.includes(newMessage)) {
-        return prevMessages;
-      } else {
-        return [...prevMessages, newMessage];
-      }
-    });
-  };
   // store data
   const inputChange = (e) => {
     setFormFields(() => ({
@@ -269,10 +185,9 @@ const ProductUpload = () => {
       [e.target.name]: e.target.value,
     }));
   };
+
   const handleSubmitForm = async (e) => {
     e.preventDefault();
-
-    // console.log(formFields);
 
     if (formFields.name === "") {
       context.setAlertBox({
@@ -336,16 +251,16 @@ const ProductUpload = () => {
         msg: "Is Featured is missing",
         error: true,
       });
-      return false;
+      return;
     }
 
-    if (files.length === 0) {
+    if (imgFiles.length === 0) {
       context.setAlertBox({
         open: true,
         msg: "Image is missing",
         error: true,
       });
-      return false;
+      return;
     }
 
     // upload image
@@ -353,49 +268,34 @@ const ProductUpload = () => {
     try {
       context.setProgress(40);
       setIsLoading(true);
-      const formData = new FormData();
-      // them tung file vào FormData
-      for (let i = 0; i < imgFiles.length; i++) {
-        formData.append("files", imgFiles[i]);
-      }
+
       let resultUploadImage = { status: false, data: [] };
-      await postUploadImages("/api/products/uploadFiles", formData).then(
-        (res) => {
-          if (res?.status && res?.status === 200) {
-            const newImages = Object.values(res.data.files).slice(
-              0,
-              res.data.files.length
-            );
-
-            setSelectedImages((prevSelectedImages) => [
-              ...prevSelectedImages,
-              ...newImages,
-            ]);
-
-            // context.setAlertBox({
-            //   open: true,
-            //   error: false,
-            //   msg: "Upload Images Success !",
-            // });
-
-            resultUploadImage.status = true;
-            resultUploadImage.data = res.data.files;
-          } else {
-            context.setAlertBox({
-              open: true,
-              error: true,
-              msg: "Upload File Fails : ",
-            });
-          }
-        }
+      const resultImageUpload = await postUploadImages(
+        "/api/products/uploadFiles",
+        FormDataImage()
       );
+      if (resultImageUpload?.status && resultImageUpload?.status === 200) {
+        resultUploadImage.status = true;
+        resultUploadImage.data = resultImageUpload.data.files;
+      } else {
+        context.setAlertBox({
+          open: true,
+          error: true,
+          msg: "Upload File Fails : ",
+        });
+      }
 
       if (resultUploadImage.status === true) {
         // // dành cho gán danh sách image link
         // formFields.images = imagesSelect;
         // dành cho dán danh sách image upload preview
+        if (valSubCat !== null) {
+          formFields.category = valSubCat;
+        }
         formFields.images = resultUploadImage.data;
-        await postData("/api/products/create", formFields).then((res) => {
+        const resultUpload = await postData("/api/products/create", formFields);
+
+        if (resultUpload?.status === 201) {
           setFormFields({
             name: "",
             description: "",
@@ -415,9 +315,14 @@ const ProductUpload = () => {
             msg: "The Product is created !",
             error: false,
           });
-
           history("/product");
-        });
+        } else {
+          context.setAlertBox({
+            open: true,
+            error: true,
+            msg: "Upload product Fails  ",
+          });
+        }
       } else {
         context.setAlertBox({
           open: true,
@@ -425,7 +330,6 @@ const ProductUpload = () => {
           msg: "Upload Image Fails  ",
         });
       }
-
       // end upload image
     } catch (error) {
       context.setAlertBox({
@@ -503,9 +407,9 @@ const ProductUpload = () => {
                         name="category"
                       >
                         <MenuItem value={null}>None</MenuItem>
-                        {Array.isArray(catData?.categoryList) &&
-                          catData?.categoryList?.length !== 0 &&
-                          catData?.categoryList?.map((cat, index) => {
+                        {Array.isArray(context.catData?.categoryList) &&
+                          context.catData?.categoryList?.length !== 0 &&
+                          context.catData?.categoryList?.map((cat, index) => {
                             return (
                               <MenuItem
                                 key={index}
@@ -519,29 +423,33 @@ const ProductUpload = () => {
                       </Select>
                     </div>
                   </div>
-                  {/* <div className="col">
+                  <div className="col">
                     <div className="form-group">
                       <h6>SUB CATEGORY</h6>
                       <Select
-                        value={subCatVal}
+                        value={valSubCat}
                         onChange={handleChangeSubCategory}
                         displayEmpty
                         inputProps={{ "aria-label": "Without label" }}
                         className="w-100"
                         name="subCategory"
                       >
-                        <MenuItem value="0">
-                          <em>None</em>
-                        </MenuItem>
-                        <MenuItem className="text-capitalize" value="jeans">
-                          Jeans
-                        </MenuItem>
-                        <MenuItem className="text-capitalize" value="shirts">
-                          Shirts
-                        </MenuItem>
+                        <MenuItem value={null}>None</MenuItem>
+                        {subCat?.length !== 0 &&
+                          subCat.map((cat, index) => {
+                            return (
+                              <MenuItem
+                                key={index}
+                                className="text-capitalize"
+                                value={cat._id}
+                              >
+                                {cat.name}
+                              </MenuItem>
+                            );
+                          })}
                       </Select>
                     </div>
-                  </div> */}
+                  </div>
 
                   <div className="col">
                     <div className="form-group">
@@ -641,75 +549,13 @@ const ProductUpload = () => {
                     </div>
                   </div>
                 </div>
-                <div className="row">
-                  <div className="col">
-                    <div className="form-group">
-                      <h6 className="text-uppercase">Product Images</h6>
-                      <div className="position-relative inputBtn">
-                        <input
-                          type="text"
-                          ref={productImagesRef}
-                          style={{ paddingRight: "100px" }}
-                          name="images"
-                          onChange={inputChange}
-                        />
-                        <Button className="btn-blue" onClick={addProductImages}>
-                          Add
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
-            <div className="col-sm-3">
-              <div className="stickyBox">
-                <h4>Product Images</h4>
-                <div className="imgGrid d-flex" id="imgGrid"></div>
-              </div>
-            </div>
+            <div className="col-sm-3"></div>
           </div>
           <div className="card p-4 mt-0">
             <div className="imagesUploadSec">
               <h5 className="mb-4">Media And Published</h5>
-              {/* <div className="imgUploadBox d-flex align-items-center">
-                {selectedImages?.length !== 0 &&
-                  selectedImages.map((img, index) => (
-                    <div className="uploadBox" key={index}>
-                      <span
-                        className="remove"
-                        onClick={(event) =>
-                          handleDeleteProductImage(img.filename, event)
-                        }
-                      >
-                        <IoCloseSharp />
-                      </span>
-                      <div className="box">
-                        <LazyLoadImage
-                          alt={"image"}
-                          effect="blur"
-                          name="images[]"
-                          src={`${UrlServe}/${img.path}`}
-                        ></LazyLoadImage>
-                      </div>
-                    </div>
-                  ))}
-
-                <div className="uploadBox">
-                  <input
-                    type="file"
-                    multiple="multiple"
-                    name="images"
-                    onChange={handleFileSelect}
-                  />
-
-                  <div className="info">
-                    <FaRegImages></FaRegImages>
-                    <h5>image upload</h5>
-                  </div>
-                </div>
-              </div>
-               */}
               <div className="imgUploadBox d-flex align-items-center">
                 {previews?.length !== 0 &&
                   previews?.map((img, index) => (
@@ -736,19 +582,6 @@ const ProductUpload = () => {
                     </div>
                   ))}
 
-                {/* <div className="uploadBox">
-                  <input
-                    type="file"
-                    multiple="multiple"
-                    name="images"
-                    onChange={handleFileSelect}
-                  />
-
-                  <div className="info">
-                    <FaRegImages></FaRegImages>
-                    <h5>image upload</h5>
-                  </div>
-                </div> */}
                 <div className="uploadBox">
                   <input
                     type="file"
@@ -784,4 +617,4 @@ const ProductUpload = () => {
   );
 };
 
-export default ProductUpload;
+export default ProductAdd;

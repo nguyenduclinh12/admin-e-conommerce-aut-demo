@@ -144,19 +144,22 @@ const Product = () => {
     });
   };
   // delete Product
-  const deleteProduct = (id) => {
+  const deleteProduct = async (id) => {
     context.setProgress(40);
-    deleteData(`/api/products`, id).then((res) => {
-      fetchDataFromApi("/api/products").then((res) => {
-        setProductList(res);
-      });
+    const resultDelete = await deleteData(`/api/products`, id);
+    console.log(resultDelete);
+    if (resultDelete?.status === 200) {
+      const productList = await fetchDataFromApi("/api/products");
+      if (productList) {
+        setProductList(productList);
+      }
       context.setProgress(100);
       context.setAlertBox({
         open: true,
         error: false,
         msg: "Delete Product Success !",
       });
-    });
+    }
   };
 
   // handle change
@@ -246,13 +249,17 @@ const Product = () => {
                               </Button>
                             </Link> */}
 
-                            <Button
-                              className="success"
-                              color="success"
-                              onClick={() => editProduct(item.id)}
-                            >
-                              <FaPencilAlt></FaPencilAlt>
-                            </Button>
+                            <Link to={`/product/edit/${item.id}`}>
+                              <Button
+                                className="success"
+                                color="success"
+
+                                // onClick={() => editProduct(item.id)}
+                              >
+                                <FaPencilAlt></FaPencilAlt>
+                              </Button>
+                            </Link>
+
                             <Button
                               className="error"
                               color="error"

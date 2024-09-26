@@ -46,11 +46,10 @@ export const deleteFile = async (url, formData) => {
 
 export const editData = async (url, updateFormData) => {
   try {
-    const { res } = await axios.put(
+    return await axios.put(
       `http://localhost:4000${url}`,
       updateFormData
     );
-    return res;
   } catch (error) {
     return error;
   }
@@ -58,8 +57,7 @@ export const editData = async (url, updateFormData) => {
 
 export const deleteData = async (url, id) => {
   try {
-    console.log(url);
-    const { res } = await axios.delete(`http://localhost:4000${url}${id}`);
+    const res  = await axios.delete(`http://localhost:4000${url}/${id}`);
     return res;
   } catch (error) {
     throw error.response ? error.response : error;

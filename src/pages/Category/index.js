@@ -76,6 +76,7 @@ const Category = () => {
   const [page, setPage] = useState(1);
   const [formFields, setFormFields] = useState({
     name: "",
+    parent: null,
     images: [],
     color: "",
   });

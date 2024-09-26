@@ -7,8 +7,8 @@ import Sidebar from "./components/Sidebar";
 import { createContext, useEffect, useState } from "react";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
-import ProductDetails from "./pages/ProductDetails";
-import ProductUpload from "./pages/ProductUpload";
+import ProductDetails from "./pages/Product/ProductDetails";
+import ProductUpload from "./pages/Product/ProductAdd";
 import CategoryAdd from "./pages/Category/CategoryAdd";
 import Category from "./pages/Category";
 // alert
@@ -19,6 +19,8 @@ import Alert from "@mui/material/Alert";
 import LoadingBar from "react-top-loading-bar";
 import Product from "./pages/Product";
 import CategoryEdit from "./pages/Category/CategoryEdit";
+import ProductEdit from "./pages/Product/ProductEdit";
+import { fetchDataFromApi } from "./utils/api";
 // end loading bar
 
 const MyContext = createContext();
@@ -27,16 +29,22 @@ function App() {
   const [isLogin, setIsLogin] = useState(true);
   const [isHideSidebarAndHeader, setIsHideSidebarAndHeader] = useState(false);
   const [themeMode, setThemeMode] = useState(true);
+  const [catData, setCatData] = useState([]);
   // alert
   const [alertBox, setAlertBox] = useState({
     msg: "",
     error: false,
     open: false,
   });
+
   // end alert
   // loading Bar
   const [progress, setProgress] = useState(0);
   // end loading bar
+
+  useEffect(() => {
+    fetchCategory();
+  }, []);
 
   useEffect(() => {
     if (themeMode === true) {
@@ -50,6 +58,12 @@ function App() {
     }
   }, [themeMode]);
 
+  // get category list
+  const fetchCategory = () => {
+    fetchDataFromApi("/api/category").then((res) => {
+      setCatData(res);
+    });
+  };
   // alert
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -78,6 +92,8 @@ function App() {
     progress,
     setProgress,
     // end prgress bar
+    catData,
+    setCatData,
   };
   useEffect(() => {}, [isToggleSidebar]);
   return (
@@ -141,6 +157,11 @@ function App() {
                 path="/product/upload"
                 exact={true}
                 element={<ProductUpload />}
+              ></Route>
+              <Route
+                path="/product/edit/:id"
+                exact={true}
+                element={<ProductEdit />}
               ></Route>
               <Route
                 path="/category"

@@ -175,9 +175,15 @@ const Dashboard = () => {
                   <MenuItem value="">
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
+                  {Array.isArray(context.catData?.categoryList) &&
+                    context.catData?.categoryList?.length !== 0 &&
+                    context.catData?.categoryList?.map((cat, index) => {
+                      return (
+                        <MenuItem key={index} value={cat._id}>
+                          {cat.name}
+                        </MenuItem>
+                      );
+                    })}
                 </Select>
               </FormControl>
             </div>
