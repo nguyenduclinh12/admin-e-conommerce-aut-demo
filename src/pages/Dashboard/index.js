@@ -21,6 +21,7 @@ import { FaEye } from "react-icons/fa6";
 import Pagination from "@mui/material/Pagination";
 import { MyContext } from "../../App";
 import { Link } from "react-router-dom";
+import { fetchDataFromApi } from "../../utils/api";
 
 export const data = [
   ["Task", "Hours per Day"],
@@ -40,6 +41,10 @@ const Dashboard = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [showBy, setShowBy] = useState("");
   const [catBy, setCatBy] = useState("");
+  const [products, setProducts] = useState([]);
+  const [productRAMS, setProductRAMS] = useState([]);
+  const [productWEIGHT, setProductWEIGHT] = useState([]);
+  const [productSIZE, setProductSIZE] = useState([]);
   const open = Boolean(anchorEl);
   const ITEM_HEIGHT = 48;
 
@@ -48,6 +53,17 @@ const Dashboard = () => {
   useEffect(() => {
     context.setIsHideSidebarAndHeader(false);
     window.scrollTo(0, 0);
+    const fetchProducts = async () => {
+      const result = await fetchDataFromApi("/api/products");
+      setProducts(result);
+    };
+    const fetchProductRAMS = async () => {
+      const result = await fetchDataFromApi("/api/productRAMS");
+      setProductRAMS(result);
+    };
+
+    fetchProducts();
+    fetchProductRAMS();
   }, []);
 
   const handleClick = (event) => {
@@ -200,61 +216,90 @@ const Dashboard = () => {
                   <th>PRICE</th>
                   <th>STOCK</th>
                   <th>RATING</th>
+                  <th>PRODUCT RAMS</th>
                   <th>ORDER</th>
                   <th>SALES</th>
                   <th>ACTION</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>#1</td>
-                  <td>
-                    <div className="d-flex align-items-center productBox">
-                      <div className="imgWrapper">
-                        <div className="img">
-                          <img
-                            src="https://res-console.cloudinary.com/dhbnnafid/media_explorer_thumbnails/d09f316e783d7cca150b20f579fd8fb8/detailed"
-                            alt=""
-                            className="w-100"
-                          />
+                {products?.length !== 0 &&
+                  products.map((product, index) => (
+                    <tr>
+                      <td>#1</td>
+                      <td>
+                        <div className="d-flex align-items-center productBox">
+                          <div className="imgWrapper">
+                            <div className="img">
+                              <img
+                                src={`${context.UrlServe}/${product.images[0]}`}
+                                alt=""
+                                className="w-100"
+                              />
+                            </div>
+                          </div>
+                          <div className="info pl-0">
+                            <h6>{product.name}</h6>
+                            <p>{product.description}</p>
+                          </div>
                         </div>
-                      </div>
-                      <div className="info pl-0">
-                        <h6>Tops and skirt set for Female</h6>
-                        <p>
-                          Women's exclusive summer tops and skirt set for female
-                          tops and skirt set
-                        </p>
-                      </div>
-                    </div>
-                  </td>
-                  <td>Womans</td>
-                  <td>Richman</td>
-                  <td style={{ width: "70px" }}>
-                    <del className="old">$21.00</del>
-                    <span className="new text-danger">$21.00</span>
-                  </td>
-                  <td>30</td>
-                  <td>4.9(16)</td>
-                  <td>380</td>
-                  <td>$38k</td>
-                  <td>
-                    <div className="actions d-flex align-items-center">
-                      <Link to="/product/details">
-                        <Button className="secondary" color="secondary">
-                          <FaEye></FaEye>
-                        </Button>
-                      </Link>
+                      </td>
+                      <td>Womans</td>
+                      <td>Richman</td>
+                      <td style={{ width: "70px" }}>
+                        <del className="old">${product.oldPrice}</del>
+                        <span className="new text-danger">
+                          ${product.price}
+                        </span>
+                      </td>
+                      <td>30</td>
+                      <td>{product.rating}(16)</td>
+                      <td style={{ width: "15%" }}>
+                        <ul className="list-data">
+                          {productRAMS
+                            .filter((item) =>
+                              product.productRAMS.includes(item.id)
+                            )
+                            .map((item) => (
+                              <li>{item.name}</li>
+                            ))}
+                      
+                          
+                        </ul>
+                        {/* <Select
+                          value={productSIZE}
+                          displayEmpty
+                          multiple
+                          name="productRAMS"
+                        >
+                          {productRAMS?.length !== 0 &&
+                            productRAMS.map((RAM, index) => (
+                              <MenuItem key={index} value={RAM.id}>
+                                {RAM.name}
+                              </MenuItem>
+                            ))}
+                        </Select> */}
+                      </td>
+                      <td>380</td>
+                      <td>$38k</td>
+                      <td>
+                        <div className="actions d-flex align-items-center">
+                          <Link to="/product/details">
+                            <Button className="secondary" color="secondary">
+                              <FaEye></FaEye>
+                            </Button>
+                          </Link>
 
-                      <Button className="success" color="success">
-                        <FaPencilAlt></FaPencilAlt>
-                      </Button>
-                      <Button className="error" color="error">
-                        <MdDelete></MdDelete>
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
+                          <Button className="success" color="success">
+                            <FaPencilAlt></FaPencilAlt>
+                          </Button>
+                          <Button className="error" color="error">
+                            <MdDelete></MdDelete>
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
             <div className="d-flex tableFooter">

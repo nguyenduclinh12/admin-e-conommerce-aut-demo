@@ -20,7 +20,10 @@ import LoadingBar from "react-top-loading-bar";
 import Product from "./pages/Product";
 import CategoryEdit from "./pages/Category/CategoryEdit";
 import ProductEdit from "./pages/Product/ProductEdit";
-import { fetchDataFromApi } from "./utils/api";
+import { fetchDataFromApi, UrlServe } from "./utils/api";
+import ProductRAMS from "./pages/Product/ProductRAMS";
+import ProductSIZE from "./pages/Product/ProductSIZE";
+import ProductWEIGHT from "./pages/Product/ProductWEIGHT";
 // end loading bar
 
 const MyContext = createContext();
@@ -94,6 +97,7 @@ function App() {
     // end prgress bar
     catData,
     setCatData,
+    UrlServe
   };
   useEffect(() => {}, [isToggleSidebar]);
   return (
@@ -162,6 +166,21 @@ function App() {
                 path="/product/edit/:id"
                 exact={true}
                 element={<ProductEdit />}
+              ></Route>
+              <Route
+                path="/product/rams"
+                exact={true}
+                element={<ProductRAMS />}
+              ></Route>
+              <Route
+                path="/product/weight"
+                exact={true}
+                element={<ProductWEIGHT />}
+              ></Route>
+              <Route
+                path="/product/size"
+                exact={true}
+                element={<ProductSIZE />}
               ></Route>
               <Route
                 path="/category"

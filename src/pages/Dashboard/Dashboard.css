@@ -53,3 +53,5 @@ body.dark .table-bordered td, .table-bordered th{border: 1px solid rgba(255, 255
 body.dark .css-1to7aaw-MuiButtonBase-root-MuiPaginationItem-root:hover{background: rgba(255, 255, 255, 0.2) !important; color: #fff !important;}
 body.dark .css-1to7aaw-MuiButtonBase-root-MuiPaginationItem-root{color: rgba(255, 255, 255, 0.8) !important;}
 
+ul.list-data {list-style: none; display: flex; justify-content: center; flex-wrap: wrap;}
+ul.list-data li{margin: 2px; padding: 2px 4px; background-color: #0858f7 !important; border-radius: 2px; color: #fff;}

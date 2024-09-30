@@ -1,13 +1,10 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./ProductAdd.css";
 import { emphasize, styled } from "@mui/material/styles";
 import Chip from "@mui/material/Chip";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import HomeIcon from "@mui/icons-material/Home";
-import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import FormHelperText from "@mui/material/FormHelperText";
-import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { Button, CircularProgress, Rating } from "@mui/material";
 import { FaCloudUploadAlt } from "react-icons/fa";
@@ -15,17 +12,15 @@ import { IoCloseSharp } from "react-icons/io5";
 import { FaRegImages } from "react-icons/fa";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
-import axios from "axios";
 import {
   deleteFile,
   editData,
   fetchDataFromApi,
-  postData,
   postUploadImages,
   UrlServe,
 } from "../../utils/api";
 import { MyContext } from "../../App";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 // breadcrumb code
 const StyledBreadCrumb = styled(Chip)(({ theme }) => {
@@ -63,6 +58,12 @@ const ProductEdit = () => {
   const [categoryVal, setCategoryVal] = useState("");
   const [ratingsValue, setRatingValue] = useState(1);
   const [isFeatured, setIsFeatured] = useState("");
+  const [productRAMS, setProductRAMS] = useState([]);
+  const [productSIZE, setProductSIZE] = useState([]);
+  const [productWEIGHT, setProductWEIGHT] = useState([]);
+  const [prodRAMSData, setProdRAMSData] = useState([]);
+  const [prodWEIGHTData, setProdWEIGHTData] = useState([]);
+  const [prodSIZEData, setProdSIZEData] = useState([]);
   const [catData, setCatData] = useState([]);
   const context = useContext(MyContext);
   const [isLoading, setIsLoading] = useState(false);
@@ -71,7 +72,6 @@ const ProductEdit = () => {
   const [fileEdit, setFileEdit] = useState([]);
   const [imgFiles, setImgFiles] = useState([]);
   const [previews, setPreviews] = useState();
-  const history = useNavigate();
   const [formFields, setFormFields] = useState({
     name: "",
     description: "",
@@ -83,6 +83,10 @@ const ProductEdit = () => {
     countInStock: 0,
     rating: 0,
     isFeatured: null,
+    discount: 0,
+    productRAMS: null,
+    productSIZE: null,
+    productWEIGHT: null,
   });
 
   // image file select
@@ -121,13 +125,42 @@ const ProductEdit = () => {
         countInStock: res.countInStock,
         rating: res.rating,
         isFeatured: res.isFeatured,
+        discount: res.discount,
+        productRAMS: res.productRAMS,
+        productSIZE: res.productSIZE,
+        productWEIGHT: res.productWEIGHT,
       });
+      setProductRAMS(res.productRAMS);
+      setProductWEIGHT(res.productWEIGHT);
+      setProductSIZE(res.productSIZE);
     });
 
     // get category list
     fetchDataFromApi("/api/category").then((res) => {
       setCatData(res);
     });
+    const getRams = async () => {
+      const data = await fetchDataFromApi("/api/productRAMS");
+      if (data) {
+        setProdRAMSData(data);
+      }
+    };
+    const getWeight = async () => {
+      const data = await fetchDataFromApi("/api/productWEIGHT");
+      if (data) {
+        setProdWEIGHTData(data);
+      }
+    };
+    const getSize = async () => {
+      const data = await fetchDataFromApi("/api/productSIZE");
+      if (data) {
+        setProdSIZEData(data);
+      }
+    };
+    getRams();
+    getWeight();
+    getSize();
+
     context.setProgress(100);
   }, []);
   // upload images
@@ -205,10 +238,37 @@ const ProductEdit = () => {
       isFeatured: event.target.value,
     }));
   };
+
+  const handleChangeProductRAMS = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setProductRAMS(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
+  };
+  const handleChangeProductSIZE = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setProductSIZE(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
+  };
+  const handleChangeProductWEIGHT = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setProductWEIGHT(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
+  };
   // handle format link image
   const handleFormatImages = (imagesToServer) => {
     try {
-
       return [...fileEdit, ...imagesToServer];
     } catch (error) {
       console.log(error);
@@ -348,10 +408,11 @@ const ProductEdit = () => {
       // dành cho dán danh sách image upload preview
 
       formFields.images = handleFormatImages(resultUploadImage.data);
-
-
+      formFields.productRAMS = productRAMS;
+      formFields.productWEIGHT = productWEIGHT;
+      formFields.productSIZE = productSIZE;
       const resultUpload = await editData(`/api/products/${id}`, formFields);
-     
+
       if (resultUpload?.status === 200) {
         // setFormFields({
         //   name: "",
@@ -496,7 +557,7 @@ const ProductEdit = () => {
                 <div className="row">
                   <div className="col">
                     <div className="form-group">
-                      <h6>PRICE</h6>
+                      <h6>SALE PRICE</h6>
                       <input
                         type="text"
                         name="price"
@@ -507,7 +568,7 @@ const ProductEdit = () => {
                   </div>
                   <div className="col">
                     <div className="form-group">
-                      <h6>OLD PRICE</h6>
+                      <h6>PRICE</h6>
                       <input
                         type="text"
                         name="oldPrice"
@@ -518,7 +579,7 @@ const ProductEdit = () => {
                   </div>
                   <div className="col-md-4">
                     <div className="form-group">
-                      <h6>DISCOUNT PRICE</h6>
+                      <h6>DISCOUNT (%)</h6>
                       <input
                         type="text"
                         name="discount"
@@ -530,7 +591,7 @@ const ProductEdit = () => {
 
                   <div className="col">
                     <div className="form-group">
-                      <h6>PRODUCT STOCK</h6>
+                      <h6>QUANTITY</h6>
                       <input
                         type="text"
                         name="countInStock"
@@ -551,6 +612,75 @@ const ProductEdit = () => {
                         onChange={inputChange}
                         value={formFields.brand}
                       />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="row">
+                  <div className="col-md-4">
+                    <div className="form-group">
+                      <h6>PRODUCT RAMS</h6>
+                      <Select
+                        value={productRAMS}
+                        onChange={handleChangeProductRAMS}
+                        displayEmpty
+                        className="w-100"
+                        name="productRAMS"
+                        multiple
+                        MenuProps={MenuProps}
+                      >
+                        <MenuItem>None</MenuItem>
+                        {prodRAMSData?.length !== 0 &&
+                          prodRAMSData.map((ram, index) => (
+                            <MenuItem key={index} value={ram.id}>
+                              {ram.name}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="form-group">
+                      <h6>PRODUCT SIZE</h6>
+                      <Select
+                        value={productSIZE}
+                        onChange={handleChangeProductSIZE}
+                        displayEmpty
+                        multiple
+                        MenuProps={MenuProps}
+                        className="w-100"
+                        name="productSIZE"
+                      >
+                        <MenuItem>None</MenuItem>
+                        {prodSIZEData?.length !== 0 &&
+                          prodSIZEData.map((size, index) => (
+                            <MenuItem key={index} value={size.id}>
+                              {size.name}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="form-group">
+                      <h6>PRODUCT WEIGHT</h6>
+                      <Select
+                        value={productWEIGHT}
+                        onChange={handleChangeProductWEIGHT}
+                        displayEmpty
+                        multiple
+                        MenuProps={MenuProps}
+                        className="w-100"
+                        name="productWEIGHT"
+                      >
+                        <MenuItem>None</MenuItem>
+                        {prodWEIGHTData?.length !== 0 &&
+                          prodWEIGHTData.map((weight, index) => (
+                            <MenuItem key={index} value={weight.id}>
+                              {weight.name}
+                            </MenuItem>
+                          ))}
+                      </Select>
                     </div>
                   </div>
                 </div>
