@@ -159,8 +159,9 @@ const ProductAdd = () => {
       category: event.target.value,
     }));
     //get subcategory
+    console.log(event.target.value)
     const resultSubcategory = await fetchDataFromApi(
-      `/api/category/subcategory/${event.target.value}`
+      `/api/category/listSubcategory?idCatParent=${event.target.value}`
     );
     if (resultSubcategory.length !== 0) {
       setSubCat(resultSubcategory);
@@ -510,7 +511,8 @@ const ProductAdd = () => {
                         name="subCategory"
                       >
                         <MenuItem value={null}>None</MenuItem>
-                        {subCat?.length !== 0 &&
+                        {Array.isArray(subCat) &&
+                          subCat?.length !== 0 &&
                           subCat.map((cat, index) => {
                             return (
                               <MenuItem
